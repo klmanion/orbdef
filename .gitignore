@@ -3,6 +3,7 @@
 *.swp
 .deps
 *~
+*.o
 
 # binary
 orbdef
