@@ -22,6 +22,8 @@ tower_t*	tower_init (tower_t *,const int,const int);
 tower_t*	tower_deinit (tower_t *);
 tower_t*	tower_free (tower_t **);
 
+shell_t*	tower_shell_add (tower_t *const,shell_t *const);
+
 void	tower_draw (const tower_t *const);
 
 #endif /* !_TOWER_H_ */

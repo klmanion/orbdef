@@ -3,6 +3,7 @@
 
 #include "tower.h"
 
+#include <string.h>
 #include <ncurses.h>
 #include <assert.h>
 #include <err.h>
@@ -44,6 +45,10 @@ tower_init(
 	tower->y = y;
 	tower->x = x;
 
+	memset(tower->shell_lst, (int)NULL, 4);
+	tower->shell_num = 0;
+	tower->shell_lst[tower->shell_num++] = shell_init(NULL);
+
 	return tower;
 }
 
@@ -78,7 +83,24 @@ tower_free(
 	return *ptr = (tower_t *)NULL;
 }
 
-/* _print() {{{1
+/* shells {{{1 */
+/* _shell_add() {{{2
+ * 	Add shell to list of shells.
+ * 	TODO: organize shells by radius.
+ */
+shell_t*
+tower_shell_add(
+    tower_t *const	t,
+    shell_t *const	s)
+{
+	assert (t);
+	assert (s);
+
+	return t->shell_lst[t->shell_num++] = s;
+}
+
+/* printing {{{1 */
+/* _print() {{{2
  */
 void
 tower_draw(
