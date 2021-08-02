@@ -130,21 +130,22 @@ entity_delta(
 entity_t*
 entity_dir(
     entity_t *const	e,
-    const dir_t		dir)
+    const dir_t		dir,
+    const int		n)
 {
 	assert (e);
 
 	if (dir_is_up(dir))
-	    entity_delta(e, -1,0);
+	    entity_delta(e, -n,0);
 
 	if (dir_is_down(dir))
-	    entity_delta(e, 1,0);
+	    entity_delta(e, n,0);
 
 	if (dir_is_left(dir))
-	    entity_delta(e, 0,-1);
+	    entity_delta(e, 0,-n);
 
 	if (dir_is_right(dir))
-	    entity_delta(e, 0,1);
+	    entity_delta(e, 0,n);
 
 	return e;
 }
