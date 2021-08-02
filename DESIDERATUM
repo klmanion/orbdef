@@ -1,0 +1,315 @@
+ORBITAL DEFENSE
+A game in which a central tower must defeat the surrounding enemy towers.
+
+The SPIRE is placed in the middle of the map
+
+SHELLS are expressed as follows:
+
+(0)
+				o
+
+(1)
+			       /-\
+			       | |
+			       \-/
+
+(2)
+			     /-----\
+			    /       \
+			    |       |
+			    \       /
+			     \-----/
+
+(3)
+			    /-------\
+			   /         \
+			  /           \
+			  |           |
+			  |           |
+			  |           |
+			  \           /
+			   \         /
+			    \-------/
+
+These three main levels may be supplemented by sub-levels,
+    which are of a radius arbitrated by the player.
+
+			    /-------\
+			   /         \
+			  /           \
+			  |           |
+			  |     o     |
+			  |           |
+			  \           /
+			   \         /
+			    \-------/
+
+			    /-------\
+			   /         \
+			  /           \
+			  |    /-\    |
+			  |    | |    |
+			  |    \-/    |
+			  \           /
+			   \         /
+			    \-------/
+
+			    /-------\
+			   /         \
+			  /  /-----\  \
+			  | /       \ |
+			  | |       | |
+			  | \       / |
+			  \  \-----/  /
+			   \         /
+			    \-------/		
+	
+The number of SUB-LEVELS is not limited to one.
+
+(3,1,0)
+			    /-------\
+			   /         \
+			  /           \
+			  |    /-\    |
+			  |    |o|    |
+			  |    \-/    |
+			  \           /
+			   \         /
+			    \-------/
+
+(3,2,0)
+			    /-------\
+			   /         \
+			  /  /-----\  \
+			  | /       \ |
+			  | |   o   | |
+			  | \       / |
+			  \  \-----/  /
+			   \         /
+			    \-------/		
+
+(3,2,1)
+			    /-------\
+			   /         \
+			  /  /-----\  \
+			  | /  /-\  \ |
+			  | |  | |  | |
+			  | \  \-/  / |
+			  \  \-----/  /
+			   \         /
+			    \-------/		
+
+(3,2,1,0)
+			    /-------\
+			   /         \
+			  /  /-----\  \
+			  | /  /-\  \ |
+			  | |  |o|  | |
+			  | \  \-/  / |
+			  \  \-----/  /
+			   \         /
+			    \-------/		
+
+					~+~
+
+If the HEALTH of the outer-level be reduced to zero the outermost sub-level,
+    like a fallback, becomes the outer level.
+The first level, having a radius of zero is the most vulnerable.
+
+The radius is not the only indicator of health.
+There is also a DEFENSE associated to each WALL forming the shell.
+If the defense falls below zero the wall is destroyed.
+
+Defense is indicated as follows:
+	0: red
+	1: white
+	2: brown
+	3: blue
+	4: green
+	5: magenta
+
+A newly constructed wall will have a defense of 1.
+
+Defense may only be incremented for the whole perimeter.
+
+Every shell of radius greater than zero will have eight sides.
+
+					~+~
+
+The spire is not the only type of TOWER.
+
+Towers are not only means of defense but offense.
+They attack like the spire,
+    but if they are destroyed it is not GAME OVER.
+
+You may UPGRADE your towers at any time.
+
+The possible ways to upgrade your towers are as follows:
+	increase shell radius
+		cost: the number of additional walls to be built
+			0->1	8-0	=	8	tot.:	8
+			1->2	20-8	= 	12	 "	20
+			2->3	32-20	=	12	 "	32
+	create central shell
+		cost: equal to the sum of the radii of the current shells
+	replace destroyed wall
+		cost: 1 per wall
+	increment defense
+		cost: 1 per wall;
+		    may only upgrade by side;
+		    may not exceed 5
+	increment range
+		cost: equal to the current range
+	increment piercing
+		cost: equal to current piercing +1 *10
+
+Additionally, the following auxillary structures my be bought:
+	landmine
+		char: `x'
+		descr.: will explode with specified radius upon contact;
+		    one use
+		cost: equal to explosion radius specified by player
+	spike
+		char: `+'
+		descr.: damages enemy upon contact;
+		    is not destroyed until contact has been made n times,
+		        where n is the cost specified by player
+		cost: durability specified by player
+
+						~+~
+
+SOLDIERS may be utilized by you and the opposing forces.
+
+The enemy army will spawn at their towers.
+
+The player's army is stationed in locations arbitrated by the player.
+The stations act as a central point of the soldier's movement.
+Soldiers will return to their station when they can,
+    but prefer to preform combat related actions;
+    when there are no possible actions in sight they will return to their
+    station.
+
+The soldiers are as follows:
+	symbol	name		HP	DMG
+	======	====		==	===
+	o	sqire		1	d4-1 (0-3)
+	O	knight		d8	d6
+	0	magician	d4	INT * 2	
+	m	medic		d6	1 HP per round
+	9	architech	3	nil
+	S	special		*	*
+
+HP, here, represents the base HP, i.e. unmodified by CON.
+
+Tables indicates the number of stat tables chosen form
+
+The knight spawns with a number of sqires equal to their CHR modifyer +2.
+
+The magician utilizes a ranged magical-based attack.
+
+The medic heals 1 health point per round, and cancels bleed-outs.
+
+    						~+~
+
+The stats are as follows:
+	ATK	INT
+	DEX	WIS
+	CON	CHR
+
+Stat tables apply for towers and soldiers.
+
+Stats are set at the time of creation and are immutable.
+For the spire, tower, and special soldier
+    the player makes a selection amongst generated stat tables.
+	spire:		9
+	tower:		3
+	special:	7
+Soldiers other than the special are assigned a table
+    with no input from the player.
+
+All stats are of value 3-18 (3d6).
+This distributes the values over the normal curve.
+
+With 3 rolls of 1-6
+    there are a possible 6^3 (=216) possible permutatations of dice sequences.
+
+    with 16 unique sums (3-18).
+
+The possible chances of rolling one of these sums are displayed as so:
+	roll	perms	chance		summed val
+	====	=====	======		==========
+	3	1	.004630		.004630
+	4	3	.013889		.018519
+	5	6	.027778		.046296
+	6	10	.046296		.092593
+	7	15	.069444		.162037
+	8	22	.101852		.259259
+	9	25	.115741		.375000
+	10	27	.125000		.500000
+	11	27	.125000		.625000
+	12	25	.115741		.740741
+	13	21	.097222		.837963
+	14	15	.069444		.907407
+	15	10	.046296		.953704
+	16	6	.027778		.981481
+	17	3	.013889		.995370
+	18	1	.004630		1
+
+Stat Bonuses:
+	3	-5
+	4-5	-4
+	6	-3
+	7	-2
+	8-9	-1
+	10-11	 0
+	12-13	+1
+	14	+2
+	15	+3
+	16-17	+4
+	18	+5
+
+These bonuses are applied to certain checks,
+    such as to-hit.
+
+						~+~
+
+Upon attacking: the attacker rolls against the defender's roll.
+
+The attacking roll is modified by ATK or INT
+    depending on if the attack was physical or magical respectively.
+The defending roll is modified by DEX or WIS
+    depending on if the attack was physical or magical respectively.
+
+CON is not only a modifier to the rolled HP,
+    but also represents a resist to damage.
+The damage resist works like a SHIELD,
+    it's initial score is the stat bonus,
+    in combat it absorbes the damage rather than the hitpoints,
+    upon depletion the hitpoints are then affected directly.
+For every round outside of combat the damage resist shield regenerates.
+Piercing attacks will damage hitpoints directly regardeless of the shield,
+    and the shield will still be reduced by any normal damage that is not
+    piercing in that attack.
+
+Upon reaching 0 health the soldier is unconscious.
+Upon reaching below 0 health the soldier is bleeding out,
+     and loses a health point every round until death at -10.
+
+The tower's attack slightly differently.
+Their attacks always hit.
+Their ATK is a _multiplier_ to their base range, which may be upgraded.
+The spire's range unlimited.
+
+						~+~
+
+The spire will select the closest enemy as a target,
+    but may be commanded to aim otherwise.
+
+Similarly each troop will stay near its station,
+    but can be command to attack certain enemies,
+    or change ther station temporarily.
+
+UPDATE:
+
+Both sides will be controllable.
+

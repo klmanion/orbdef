@@ -1,0 +1,11 @@
+# .gitignore
+
+*.swp
+.deps
+*~
+
+# binary
+orbdef
+
+# ctags
+tags
