@@ -72,7 +72,28 @@ entity_free(
 	return *ptr = (entity_t *)NULL;
 }
 
-/* _move() {{{1
+/* predicates {{{1 */
+/* _visable() {{{2
+ */
+bool
+entity_is_visable(
+    const entity_t *const	e)
+{
+	return e->y > -1 && e->x > -1;
+}
+
+/* _hidden() {{{2
+ */
+bool
+entity_is_hidden(
+    const entity_t *const	e)
+{
+	return !entity_is_visable(e);
+}
+
+
+/* movement {{{1 */
+/* _move() {{{2
  * 	Moves the entity.
  * 	Movement must be checked by calling function.
  */
@@ -90,22 +111,42 @@ entity_move(
 	return e;
 }
 
-/* _visable() {{{1
+/* _delta() {{{2
+ * 	Moves entity by the values of the arguments relative to its position
  */
-bool
-entity_visable(
-    const entity_t *const	e)
+entity_t*
+entity_delta(
+    entity_t *const	e,
+    const int		dy,
+    const int		dx)
 {
-	return e->y > -1 && e->x > -1;
+	assert (e);
+	return entity_move(e, e->y+dy, e->x+dx);
 }
 
-/* _hidden() {{{1
+/* _dir() {{{2
+ * 	Move entity in given direction.
  */
-bool
-entity_hidden(
-    const entity_t *const	e)
+entity_t*
+entity_dir(
+    entity_t *const	e,
+    const dir_t		dir)
 {
-	return !entity_visable(e);
+	assert (e);
+
+	if (dir_is_up(dir))
+	    entity_delta(e, -1,0);
+
+	if (dir_is_down(dir))
+	    entity_delta(e, 1,0);
+
+	if (dir_is_left(dir))
+	    entity_delta(e, 0,-1);
+
+	if (dir_is_right(dir))
+	    entity_delta(e, 0,1);
+
+	return e;
 }
 
 /* vi: set ts=8 sw=8 noexpandtab tw=79: */

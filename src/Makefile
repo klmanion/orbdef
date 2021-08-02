@@ -26,7 +26,7 @@ bindir = $(prefix)/bin
 
 SRCS_C = main.c orbdef.c \
 	 dice.c \
-	 entity.c stbl.c \
+	 entity.c dir.c stbl.c \
 	 tower.c shell.c wall.c \
 	 soldier.c
 SRCS = $(SRCS_C)
@@ -71,13 +71,13 @@ orbdef: $(OBJS)
 
 main.o: orbdef.o
 
-orbdef.o: tower.o
+orbdef.o: tower.o entity.o dir.o
 
 tower.o: shell.o
 
 shell.o: wall.o
 
-entity.o: stbl.o
+entity.o: dir.o
 
 stbl.o: dice.o
 

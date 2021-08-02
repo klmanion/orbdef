@@ -7,6 +7,8 @@
 #include <ncurses.h>
 #include <stdbool.h>
 #include <string.h>
+#include "dir.h"
+#include "entity.h"
 #include "tower.h"
 
 static	tower_t	*tower_lst[8];
@@ -48,10 +50,12 @@ orbdef()
 	spire.shell_lst[3] = shell3;
 
 	/* place surrounding towers */
-	int cy,cx;	/* cursor y,x */
+	entity_t cursor;
 
-	cy = row/2;
-	cx = col/2;
+	entity_init(&cursor);
+
+	cursor.y = row/2;
+	cursor.x = col/2;
 
 	for (bool running=true; running; )
 	    {
@@ -63,7 +67,7 @@ orbdef()
 		    tower_draw(tower_lst[n]);
 
 		attron(A_REVERSE);
-		move(cy,cx);
+		move(cursor.y,cursor.x);
 		addch(inch() & A_CHARTEXT);
 		attroff(A_REVERSE);
 
@@ -79,19 +83,27 @@ orbdef()
 		/* TODO: cursor object */
 		case 'j':
 		case KEY_DOWN:
-			++cy;	break;;
+			entity_dir(&cursor, dir_bot);	break;;
 		case 'k':
 		case KEY_UP:
-			--cy;	break;;
+			entity_dir(&cursor, dir_top);	break;;
 		case 'h':
 		case KEY_LEFT:
-			--cx;	break;;
+			entity_dir(&cursor, dir_cl);	break;;
 		case 'l':
 		case KEY_RIGHT:
-			++cx;	break;;
+			entity_dir(&cursor, dir_cr);	break;;
+		case 'y':
+			entity_dir(&cursor, dir_tl);	break;;
+		case 'u':
+			entity_dir(&cursor, dir_tr);	break;;
+		case 'b':
+			entity_dir(&cursor, dir_bl);	break;;
+		case 'n':
+			entity_dir(&cursor, dir_br);	break;;
 
 		case '\r':	/* place tower */
-			tower_lst[tower_num++] = tower_init(NULL, cy,cx);
+			tower_lst[tower_num++] = tower_init(NULL, cursor.y,cursor.x);
 			break;;
 
 		default:
