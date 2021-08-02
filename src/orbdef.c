@@ -83,24 +83,24 @@ orbdef()
 		/* TODO: cursor object */
 		case 'j':
 		case KEY_DOWN:
-			entity_dir(&cursor, dir_bot, 1);	break;;
+			entity_mvdir(&cursor, dir_bot, 1);	break;;
 		case 'k':
 		case KEY_UP:
-			entity_dir(&cursor, dir_top, 1);	break;;
+			entity_mvdir(&cursor, dir_top, 1);	break;;
 		case 'h':
 		case KEY_LEFT:
-			entity_dir(&cursor, dir_cl, 1);	break;;
+			entity_mvdir(&cursor, dir_cl, 1);	break;;
 		case 'l':
 		case KEY_RIGHT:
-			entity_dir(&cursor, dir_cr, 1);	break;;
+			entity_mvdir(&cursor, dir_cr, 1);	break;;
 		case 'y':
-			entity_dir(&cursor, dir_tl, 1);	break;;
+			entity_mvdir(&cursor, dir_tl, 1);	break;;
 		case 'u':
-			entity_dir(&cursor, dir_tr, 1);	break;;
+			entity_mvdir(&cursor, dir_tr, 1);	break;;
 		case 'b':
-			entity_dir(&cursor, dir_bl, 1);	break;;
+			entity_mvdir(&cursor, dir_bl, 1);	break;;
 		case 'n':
-			entity_dir(&cursor, dir_br, 1);	break;;
+			entity_mvdir(&cursor, dir_br, 1);	break;;
 
 		case '\r':	/* place tower */
 			tower_lst[tower_num++] = tower_init(NULL, cursor.y,cursor.x);

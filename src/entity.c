@@ -128,7 +128,7 @@ entity_delta(
  * 	Move entity in given direction.
  */
 entity_t*
-entity_dir(
+entity_mvdir(
     entity_t *const	e,
     const dir_t		dir,
     const int		n)

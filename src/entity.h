@@ -29,7 +29,7 @@ bool		entity_is_hidden (const entity_t *const);
 
 entity_t*	entity_move (entity_t *const,const int,const int);
 entity_t*	entity_delta (entity_t *const,const int,const int);
-entity_t*	entity_dir (entity_t *const,const dir_t,const int);
+entity_t*	entity_mvdir (entity_t *const,const dir_t,const int);
 
 #endif /* !_ENTITY_H_ */
 
