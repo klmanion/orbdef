@@ -11,8 +11,8 @@ all:
 	$(MAKE) -C $(srcdir) all
 
 .PHONY: orbdef
-wizbat:
-	$(MAKE) -C $(srcdir) wizbat
+orbdef:
+	$(MAKE) -C $(srcdir) orbdef
 
 .PHONY: install
 	$(MAKE) -C $(srcdir) install
