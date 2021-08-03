@@ -27,30 +27,6 @@ orbdef()
 	getmaxyx(stdscr, row,col);
 	tower_init(&spire, row/2,col/2);
 
-	/*
-	shell_t *shell0 = NULL;
-	shell0 = shell_init(NULL);
-	shell0->radius = 0;
-
-	shell_t *shell1 = NULL;
-	shell1 = shell_init(shell1);
-	shell1->radius = 1;
-
-	shell_t *shell2 = NULL;
-	shell2 = shell_init(shell2);
-	shell2->radius = 2;
-
-	shell_t *shell3 = NULL;
-	shell3 = shell_init(shell3);
-	shell3->radius = 3;
-
-	spire.shell_num = 4;
-	spire.shell_lst[0] = shell0;
-	spire.shell_lst[1] = shell1;
-	spire.shell_lst[2] = shell2;
-	spire.shell_lst[3] = shell3;
-	*/
-
 	tower_shell_add(&spire, shell_init(NULL, 0));
 	tower_shell_add(&spire, shell_init(NULL, 1));
 	tower_shell_add(&spire, shell_init(NULL, 2));
