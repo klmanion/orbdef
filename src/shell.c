@@ -7,7 +7,9 @@
 #include <string.h>
 #include <assert.h>
 #include <err.h>
+#include "wall.h"
 
+/* image table {{{1 */
 static	char *shell0[] = {	/* shell 0 */
 	"o",
 	"\0"
@@ -72,12 +74,58 @@ shell_init(
     shell_t	*shell,
     const int	 radius)
 {
+	char **img;
+	int w;
+	int cols,rows;
+
+	assert (radius >= 0 && radius <= 3);
+
 	if (!shell)
 	    shell = shell_alloc(NULL);
 
 	shell->radius = radius;
 
-	
+	img = shell_image(shell);
+
+	shell->wall_lst = (wall_t **)malloc(sizeof(wall_t *)
+					   * shell_walls_num(shell));
+	if (!shell->wall_lst)
+	    errx(1,"malloc failure, %s:%d", __FILE__, __LINE__);
+
+	w = 0;
+
+	rows = shell_rows(shell);
+	cols = shell_cols(shell);
+
+	for (size_t i=0; i<rows; ++i)
+	    {
+		for (size_t j=0; j<cols; ++j)
+		    {
+			char tok;
+			int oyd,oxd;
+
+			if (img[i][j] == ' ')
+			    continue;
+
+			tok = img[i][j];
+
+			/*
+			 *  /-\
+			 *  | |
+			 *  \-/
+			 *
+			 *  o: 1,1	0,0
+			 *  /: 0,0	-1,-1
+			 *  -: 0,1	-1,0
+			 *  |: 1,0	0,-1
+			 */
+			oyd = i - (rows-1)/2;
+			oxd = j - (cols-1)/2;
+
+			wall_init(wall_alloc(&shell->wall_lst[w++]),
+				  tok, oyd,oxd);
+		    }
+	    }
 
 	return shell;
 }
@@ -167,30 +215,26 @@ shell_walls_num(
 
 /* drawing {{{1 */
 /* _draw() {{{2
-*/
+ */
 void
 shell_draw(
-    const shell_t *const	s,
-    const int			y,
-    const int			x)
+    const shell_t *const	sh,
+    const int			oy,
+    const int			ox)
 {
-	int h,w,yoff,xoff;
-	char **img;
+	assert (sh);
 
-	assert (s);
+	for (size_t w=0; w<shell_walls_num(sh); ++w)
+	    {
+		wall_t *wall;
 
-	img = tab[s->radius];
+		wall = sh->wall_lst[w];
+		assert (wall);
 
-	for (h=0; *img[++h]; ) { }
-	w = strlen(*img);
+		mvprintw(oy+wall->oyd, ox+wall->oxd, "%c", wall->tok);
+	    }
 
-	yoff = -((h-1) / 2);
-	xoff = -((w-1) / 2);
-
-	for (int row=0; row<h; ++row)
-	    for (int col=0; col<w; ++col)
-		if (img[row][col] != ' ')
-		    mvaddch(y+yoff+row, x+xoff+col, img[row][col]);
+	return;
 }
 
 /* vi: set ts=8 sw=8 noexpandtab tw=79: */

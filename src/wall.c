@@ -6,7 +6,6 @@
 #include <ncurses.h>
 #include <assert.h>
 #include <err.h>
-#include "clrpr.h"
 
 
 /* memory allocation {{{1 */
@@ -34,12 +33,18 @@ wall_alloc(
  */
 wall_t*
 wall_init(
-    wall_t *wall)
+    wall_t	*wall,
+    const char	 tok,
+    const int	 oyd,
+    const int	 oxd)
 {
 	if (!wall)
 	    wall = wall_alloc(NULL);
 
-	wall->def = 1;
+	wall->tok = tok;
+
+	wall->oyd = oyd;
+	wall->oxd = oxd;
 
 	return wall;
 }
@@ -75,39 +80,17 @@ wall_free(
 	return *ptr = (wall_t *)NULL;
 }
 
-/* _color() {{{1
- * 	Return the COLOR_PAIR to attribute the wall token.
- * 	Controlled by current defense.
- * 		0:	red
- * 		1:	white
- * 		2:	brown
- * 		3:	blue
- * 		4:	green
- * 		5:	magenta
- */
-
-int
-wall_color(
-    const wall_t *const	w)
+/* drawing {{{1 */
+/* _draw() {{{2 */
+void
+wall_draw(
+    const wall_t *const	wall,
+    const int		oy,
+    const int		ox)
 {
-	assert (w);
-
-	switch (w->def) {
-	case 0:
-		return CLRPR_RED;
-	case 1:
-		return CLRPR_WHITE;
-	case 2:
-		return CLRPR_BROWN;
-	case 3:
-		return CLRPR_BLUE;
-	case 4:
-		return CLRPR_GREEN;
-	case 5:
-		return CLRPR_MAGENTA;
-	}
-
-	return CLRPR_DEFAULT;	/* will never reach */
+	assert (wall);
+	mvprintw(oy+wall->oyd, ox+wall->oxd, "%c", wall->tok);
+	return;
 }
 
 /* vi: set ts=8 sw=8 noexpandtab tw=79: */

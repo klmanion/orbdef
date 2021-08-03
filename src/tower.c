@@ -47,7 +47,7 @@ tower_init(
 
 	memset(tower->shell_lst, (int)NULL, 4);
 	tower->shell_num = 0;
-	tower->shell_lst[tower->shell_num++] = shell_alloc(NULL);	/* FIXME*/
+//	tower->shell_lst[tower->shell_num++] = shell_alloc(NULL);	/* FIXME*/
 
 	return tower;
 }

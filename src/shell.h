@@ -5,14 +5,14 @@
 #define _SHELL_H_
 
 #include <stdlib.h>
-#include "side.h"
+#include "wall.h"
 
 typedef
 struct Shell
 {
 	int	radius;
 
-
+	wall_t	**wall_lst;
 } shell_t;
 
 shell_t*	shell_alloc (shell_t **);

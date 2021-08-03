@@ -51,12 +51,12 @@ orbdef()
 	spire.shell_lst[3] = shell3;
 	*/
 
-	shell_t shell;
-	shell_init(&shell, 1);
-	mvprintw(10,10, "%dx%d %d walls",
-		 shell_rows(&shell),
-		 shell_cols(&shell),
-		 shell_walls_num(&shell));
+	tower_shell_add(&spire, shell_init(NULL, 0));
+	tower_shell_add(&spire, shell_init(NULL, 1));
+	tower_shell_add(&spire, shell_init(NULL, 2));
+	tower_shell_add(&spire, shell_init(NULL, 3));
+	tower_draw(&spire);
+
 	refresh();	getch();
 	return 0;
 

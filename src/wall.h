@@ -9,15 +9,18 @@
 typedef
 struct Wall
 {
-	int	def;
+	char	tok;	/* token */
+
+	int	oyd;	/* y-axis origin difference */
+	int	oxd;	/* x-axis origin difference */
 } wall_t;
 
 wall_t*	wall_alloc (wall_t **);
-wall_t*	wall_init (wall_t *);
+wall_t*	wall_init (wall_t *,const char,const int,const int);
 wall_t*	wall_deinit (wall_t *);
 wall_t*	wall_free (wall_t **);
 
-int	wall_color (const wall_t *const);
+void	wall_draw (const wall_t *const,const int,const int);
 
 #endif /* !_WALL_H_ */
 
