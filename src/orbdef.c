@@ -39,10 +39,7 @@ orbdef()
 	/* place surrounding towers */
 	entity_t cursor;
 
-	entity_init(&cursor);
-
-	cursor.y = row/2;
-	cursor.x = col/2;
+	entity_init(&cursor, row/2,col/2);
 
 	for (bool running=true; running; )
 	    {
@@ -54,7 +51,7 @@ orbdef()
 		    tower_draw(tower_lst[n]);
 
 		attron(A_REVERSE);
-		move(cursor.y,cursor.x);
+		move(entity_pos_y(&cursor),entity_pos_x(&cursor));
 		addch(inch() & A_CHARTEXT);
 		attroff(A_REVERSE);
 
@@ -90,7 +87,10 @@ orbdef()
 			entity_mvdir(&cursor, dir_br, 1);	break;;
 
 		case '\r':	/* place tower */
-			tower_lst[tower_num++] = tower_init(NULL, cursor.y,cursor.x);
+			tower_lst[tower_num++] = 
+				tower_init(NULL,
+					   entity_pos_y(&cursor),
+					   entity_pos_x(&cursor));
 			break;;
 
 		default:

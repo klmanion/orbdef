@@ -29,16 +29,79 @@ entity_alloc(
  * 	Initiallize the memory of the Entity struct.
  * 	Will allocate memory if passed NULL.
  * 	Returns a pointer to the Entity struct.
+ *
+ * 	Determines the entity's placement absolutely,
+ * 	i.e. not relatively.
+ * 	Its xo,yo coordinate pair designate its position.
  */
 entity_t*
 entity_init(
-    entity_t *entity)
+    entity_t	*entity,
+    const int	 y,
+    const int	 x)
 {
 	if (!entity)
 	    entity = entity_alloc(NULL);
 
-	entity->y = entity->x = -1;
+	entity->yo = (int *)malloc(sizeof(int));
+	if (!entity->yo)
+	    errx(1,"malloc failure, %s:%d", __FILE__, __LINE__);
+
+	entity->xo = (int *)malloc(sizeof(int));
+	if (!entity->xo)
+	    errx(1,"malloc failure, %s:%d", __FILE__, __LINE__);
+
+	*entity->yo = y;
+	*entity->xo = x;
+
+	entity->yd = 0;
+	entity->xd = 0;
+
+	entity->rel = false;
+
 	entity->icon = '\0';
+
+	entity->dir = dir_ctr;
+
+	entity->hide = false;
+
+	return entity;
+}
+
+/* _init_rel() {{{2
+ * 	Initiallize the memory of the Entity struct.
+ * 	Will allocate memory if passed NULL.
+ * 	Returns a pointer to the Entity struct.
+ *
+ * 	Determines the entity's placement relatively,
+ * 	i.e. relative to a position outside of the entity.
+ * 	Its xd,yx coordinate pair is an offset to the
+ * 	coordinate pointed to by xo,yo.
+ */
+entity_t*
+entity_init_rel(
+    entity_t	*entity,
+    int *const	 yo,
+    int	*const	 xo,
+    const int	 yd,
+    const int	 xd)
+{
+	if (!entity)
+	    entity = entity_alloc(NULL);
+
+	entity->yo = yo;
+	entity->xo = xo;
+
+	entity->yd = yd;
+	entity->xd = xd;
+
+	entity->rel = true;
+
+	entity->icon = '\0';
+
+	entity->dir = dir_ctr;
+
+	entity->hide = false;
 
 	return entity;
 }
@@ -53,6 +116,12 @@ entity_deinit(
     entity_t	*entity)
 {
 	assert (entity);
+
+	if (entity_is_relative(entity))
+	    {
+		free(entity->yo);	entity->yo = (int *)NULL;
+		free(entity->xo);	entity->xo = (int *)NULL;
+	    }
 
 	return entity;
 }
@@ -73,16 +142,27 @@ entity_free(
 }
 
 /* predicates {{{1 */
-/* _visable() {{{2
+/* _is_relative() {{{2
+ * 	Returns true if the entity's position is defined relative to a point
+ * 	outside itself.
+ */
+bool
+entity_is_relative(
+    const entity_t *const	e)
+{
+	return e->rel;
+}
+
+/* _is_visable() {{{2
  */
 bool
 entity_is_visable(
     const entity_t *const	e)
 {
-	return e->y > -1 && e->x > -1;
+	return !e->hide;
 }
 
-/* _hidden() {{{2
+/* _is_hidden() {{{2
  */
 bool
 entity_is_hidden(
@@ -91,6 +171,52 @@ entity_is_hidden(
 	return !entity_is_visable(e);
 }
 
+/* accessors/mutators {{{1 */
+/* _pos_x() {{{2 */
+int
+entity_pos_y(
+    const entity_t *const	e)
+{
+	assert (e);
+	return *e->xo + e->xd;
+}
+
+/* _pos_y_set() {{{2 */
+int
+entity_pos_y_set(
+    entity_t *const	e,
+    const int		i)
+{
+	assert (e);
+
+	if (!entity_is_relative(e))
+	    return *e->yo = i;
+	else
+	    return e->yd = i;
+}
+
+/* _pos_y() {{{2 */
+int
+entity_pos_x(
+    const entity_t *const	e)
+{
+	assert (e);
+	return *e->yo + e->yd;
+}
+
+/* _pos_x_set() {{{2 */
+int
+entity_pos_x_set(
+    entity_t *const	e,
+    const int		i)
+{
+	assert (e);
+
+	if (!entity_is_relative(e))
+	    return *e->xo = i;
+	else
+	    return e->xd = i;
+}
 
 /* movement {{{1 */
 /* _move() {{{2
@@ -105,8 +231,8 @@ entity_move(
 {
 	assert (e);
 
-	e->y = y;
-	e->x = x;
+	entity_pos_y_set(e, y);
+	entity_pos_x_set(e, x);
 
 	return e;
 }
@@ -121,7 +247,11 @@ entity_delta(
     const int		dx)
 {
 	assert (e);
-	return entity_move(e, e->y+dy, e->x+dx);
+
+	entity_pos_y_set(e, entity_pos_y(e) + dy);
+	entity_pos_x_set(e, entity_pos_x(e) + dx);
+
+	return e;
 }
 
 /* _dir() {{{2

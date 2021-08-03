@@ -45,7 +45,7 @@ soldier_init(
 	if (!soldier)
 	    soldier = soldier_alloc(NULL);
 
-	entity_init(entity_alloc(&soldier->e));
+	entity_init(entity_alloc(&soldier->e), -1,-1);
 
 	soldier->styp = styp;
 
@@ -107,7 +107,8 @@ soldier_draw(
 
 	attron(COLOR_PAIR(clrpr));
 
-	mvprintw(sld->e->y,sld->e->x, "%c", sld->e->icon);
+	mvprintw(entity_pos_y(sld->e),entity_pos_x(sld->e),
+		 "%c", sld->e->icon);
 
 	attroff(COLOR_PAIR(clrpr));
 
