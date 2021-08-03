@@ -8,43 +8,39 @@
 #include <assert.h>
 #include <err.h>
 
-static	char *shell0[] =
-	    {	/* shell 0 */
-		"o",
-		"\0"
-	    };
+static	char *shell0[] = {	/* shell 0 */
+	"o",
+	"\0"
+};
 
-static	char *shell1[] =
-	    {	/* shell 1 */
-		"/-\\",
-		"| |",
-		"\\-/",
-		"\0"
-	    };
+static	char *shell1[] = {	/* shell 1 */
+	"/-\\",
+	"| |",
+	"\\-/",
+	"\0"
+};
 
-static	char *shell2[] =
-	    {	/* shell 2 */
-		" /-----\\ ",
-		"/       \\",
-		"|       |",
-		"\\       /",
-		" \\-----/ ",
-		"\0"
-	    };
+static	char *shell2[] = {	/* shell 2 */
+	" /-----\\ ",
+	"/       \\",
+	"|       |",
+	"\\       /",
+	" \\-----/ ",
+	"\0"
+};
 
-static	char *shell3[] =
-	    {	/* shell 3 */
-		"  /-------\\  ",
-		" /         \\ ",
-		"/           \\",
-		"|           |",
-		"|           |",
-		"|           |",
-		"\\           /",
-		" \\         / ",
-		"  \\-------/  ",
-		"\0"
-	    };
+static	char *shell3[] = {	/* shell 3 */
+	"  /-------\\  ",
+	" /         \\ ",
+	"/           \\",
+	"|           |",
+	"|           |",
+	"|           |",
+	"\\           /",
+	" \\         / ",
+	"  \\-------/  ",
+	"\0"
+};
 
 static	char **tab[] = { shell0, shell1, shell2, shell3 };
 
@@ -73,12 +69,15 @@ shell_alloc(
  */
 shell_t*
 shell_init(
-    shell_t *shell)
+    shell_t	*shell,
+    const int	 radius)
 {
 	if (!shell)
 	    shell = shell_alloc(NULL);
 
-	shell->radius = 0;
+	shell->radius = radius;
+
+	
 
 	return shell;
 }
@@ -114,8 +113,61 @@ shell_free(
 	return *ptr = (shell_t *)NULL;
 }
 
-/* _draw() {{{1
+/* accessors {{{1 */
+/* _image()
  */
+char**
+shell_image(
+    const shell_t *const	sh)
+{
+	assert (sh);
+	return tab[sh->radius];
+}
+
+/* _rows()
+ */
+int
+shell_rows(
+    const shell_t *const	sh)
+{
+	char **img, **ptr;
+
+	for (ptr=img=shell_image(sh); *ptr[0]; ++ptr) { }
+	return ptr - img;
+}
+
+/* _cols()
+ */
+int
+shell_cols(
+    const shell_t *const	sh)
+{
+	return strlen(*shell_image(sh));
+}
+
+/* walls_num()
+ */
+int
+shell_walls_num(
+    const shell_t *const	sh)
+{
+	int acc;
+	char **img;
+
+	acc = 0;
+	img = shell_image(sh);
+
+	for (size_t i=0; i<shell_rows(sh); ++i)
+	    for (size_t j=0; j<shell_cols(sh); ++j)
+		if (img[i][j] != ' ')
+		    ++acc;
+
+	return acc;
+}
+
+/* drawing {{{1 */
+/* _draw() {{{2
+*/
 void
 shell_draw(
     const shell_t *const	s,

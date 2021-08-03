@@ -13,8 +13,8 @@ struct Tower
 	int	y;
 	int	x;
 
-	int	 shell_num;
 	shell_t	*shell_lst[4];
+	int	 shell_num;
 } tower_t;
 
 tower_t*	tower_alloc (tower_t **);

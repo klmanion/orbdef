@@ -27,6 +27,7 @@ orbdef()
 	getmaxyx(stdscr, row,col);
 	tower_init(&spire, row/2,col/2);
 
+	/*
 	shell_t *shell0 = NULL;
 	shell0 = shell_init(NULL);
 	shell0->radius = 0;
@@ -48,6 +49,16 @@ orbdef()
 	spire.shell_lst[1] = shell1;
 	spire.shell_lst[2] = shell2;
 	spire.shell_lst[3] = shell3;
+	*/
+
+	shell_t shell;
+	shell_init(&shell, 1);
+	mvprintw(10,10, "%dx%d %d walls",
+		 shell_rows(&shell),
+		 shell_cols(&shell),
+		 shell_walls_num(&shell));
+	refresh();	getch();
+	return 0;
 
 	/* place surrounding towers */
 	entity_t cursor;
