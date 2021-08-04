@@ -5,18 +5,19 @@
 #define _WALL_H_
 
 #include <stdlib.h>
+#include "entity.h"
 
 typedef
 struct Wall
 {
 	char	tok;	/* token */
 
-	int	oyd;	/* y-axis origin difference */
-	int	oxd;	/* x-axis origin difference */
+	entity_t	*e;
 } wall_t;
 
 wall_t*	wall_alloc (wall_t **);
-wall_t*	wall_init (wall_t *,const char,const int,const int);
+wall_t*	wall_init (wall_t *,const char,int *const,int *const,
+		   const int,const int);
 wall_t*	wall_deinit (wall_t *);
 wall_t*	wall_free (wall_t **);
 

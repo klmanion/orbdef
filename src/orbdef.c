@@ -8,7 +8,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "dir.h"
-#include "entity.h"
+#include "entity.h"	/* may remove after cursor is implemented */
 #include "tower.h"
 
 static	tower_t	*tower_lst[8];
@@ -27,10 +27,10 @@ orbdef()
 	getmaxyx(stdscr, row,col);
 	tower_init(&spire, row/2,col/2);
 
-	tower_shell_add(&spire, shell_init(NULL, 0));
-	tower_shell_add(&spire, shell_init(NULL, 1));
-	tower_shell_add(&spire, shell_init(NULL, 2));
-	tower_shell_add(&spire, shell_init(NULL, 3));
+	tower_shell_add(&spire, shell_init(NULL, 0, 0,0));
+	tower_shell_add(&spire, shell_init(NULL, 1, 0,0));
+	tower_shell_add(&spire, shell_init(NULL, 2, 0,0));
+	tower_shell_add(&spire, shell_init(NULL, 3, 0,0));
 	tower_draw(&spire);
 
 	refresh();	getch();

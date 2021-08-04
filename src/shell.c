@@ -72,7 +72,9 @@ shell_alloc(
 shell_t*
 shell_init(
     shell_t	*shell,
-    const int	 radius)
+    const int	 radius,
+    const int	 y,
+    const int	 x)
 {
 	char **img;
 	int w;
@@ -82,6 +84,8 @@ shell_init(
 
 	if (!shell)
 	    shell = shell_alloc(NULL);
+
+	entity_init(entity_alloc(&shell->e), y,x);
 
 	shell->radius = radius;
 
@@ -102,7 +106,7 @@ shell_init(
 		for (size_t j=0; j<cols; ++j)
 		    {
 			char tok;
-			int oyd,oxd;
+			int yd,xd;
 
 			if (img[i][j] == ' ')
 			    continue;
@@ -119,11 +123,13 @@ shell_init(
 			 *  -: 0,1	-1,0
 			 *  |: 1,0	0,-1
 			 */
-			oyd = i - (rows-1)/2;
-			oxd = j - (cols-1)/2;
+			yd = i - (rows-1)/2;
+			xd = j - (cols-1)/2;
 
 			wall_init(wall_alloc(&shell->wall_lst[w++]),
-				  tok, oyd,oxd);
+				  tok,
+				  shell->e->yo,shell->e->xo,
+				  yd,xd);
 		    }
 	    }
 
@@ -218,9 +224,7 @@ shell_walls_num(
  */
 void
 shell_draw(
-    const shell_t *const	sh,
-    const int			oy,
-    const int			ox)
+    const shell_t *const	sh)
 {
 	assert (sh);
 
@@ -231,7 +235,8 @@ shell_draw(
 		wall = sh->wall_lst[w];
 		assert (wall);
 
-		mvprintw(oy+wall->oyd, ox+wall->oxd, "%c", wall->tok);
+		mvprintw(entity_pos_y(wall->e),entity_pos_x(wall->e),
+			 "%c", wall->tok);
 	    }
 
 	return;

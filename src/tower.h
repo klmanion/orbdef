@@ -10,11 +10,10 @@
 typedef
 struct Tower
 {
-	int	y;
-	int	x;
-
 	shell_t	*shell_lst[4];
 	int	 shell_num;
+
+	entity_t	*e;
 } tower_t;
 
 tower_t*	tower_alloc (tower_t **);

@@ -73,9 +73,11 @@ main.o: orbdef.o
 
 orbdef.o: tower.o entity.o dir.o
 
-tower.o: shell.o
+tower.o: entity.o shell.o
 
-shell.o: wall.o
+shell.o: entity.o wall.o
+
+wall.o: entity.o
 
 entity.o: dir.o
 

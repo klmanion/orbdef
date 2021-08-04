@@ -42,12 +42,10 @@ tower_init(
 	if (!tower)
 	    tower = tower_alloc(NULL);
 
-	tower->y = y;
-	tower->x = x;
+	entity_init(entity_alloc(&tower->e), y,x);
 
 	memset(tower->shell_lst, (int)NULL, 4);
 	tower->shell_num = 0;
-//	tower->shell_lst[tower->shell_num++] = shell_alloc(NULL);	/* FIXME*/
 
 	return tower;
 }
@@ -62,6 +60,8 @@ tower_deinit(
     tower_t	*tower)
 {
 	assert (tower);
+
+	entity_free(&tower->e);
 
 	/* TODO */
 
@@ -87,6 +87,9 @@ tower_free(
 /* _shell_add() {{{2
  * 	Add shell to list of shells.
  * 	TODO: organize shells by radius.
+ * 	FIXME: will be deprecated
+ * 		shells will be created and maintained
+ * 		by spawning at radius 0 and growing
  */
 shell_t*
 tower_shell_add(
@@ -95,6 +98,8 @@ tower_shell_add(
 {
 	assert (t);
 	assert (s);
+
+	entity_move(s->e, entity_pos_y(t->e),entity_pos_x(t->e));
 
 	return t->shell_lst[t->shell_num++] = s;
 }
@@ -109,7 +114,7 @@ tower_draw(
 	assert(t);
 
 	for (size_t i=0; i<t->shell_num; ++i)
-	    shell_draw(t->shell_lst[i], t->y,t->x);
+	    shell_draw(t->shell_lst[i]);
 
 	return;
 }

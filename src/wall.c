@@ -35,16 +35,17 @@ wall_t*
 wall_init(
     wall_t	*wall,
     const char	 tok,
-    const int	 oyd,
-    const int	 oxd)
+    int *const	 yo,
+    int *const	 xo,
+    const int	 yd,
+    const int	 xd)
 {
 	if (!wall)
 	    wall = wall_alloc(NULL);
 
-	wall->tok = tok;
+	entity_init_rel(entity_alloc(&wall->e), yo,xo, yd,xd);
 
-	wall->oyd = oyd;
-	wall->oxd = oxd;
+	wall->tok = tok;
 
 	return wall;
 }
@@ -60,7 +61,7 @@ wall_deinit(
 {
 	assert (wall);
 
-	/* TODO */
+	wall->e = entity_free(&wall->e);
 
 	return wall;
 }
@@ -89,7 +90,8 @@ wall_draw(
     const int		ox)
 {
 	assert (wall);
-	mvprintw(oy+wall->oyd, ox+wall->oxd, "%c", wall->tok);
+	mvprintw(entity_pos_y(wall->e),entity_pos_x(wall->e),
+		 "%c", wall->tok);
 	return;
 }
 

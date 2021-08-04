@@ -172,13 +172,13 @@ entity_is_hidden(
 }
 
 /* accessors/mutators {{{1 */
-/* _pos_x() {{{2 */
+/* _pos_y() {{{2 */
 int
 entity_pos_y(
     const entity_t *const	e)
 {
 	assert (e);
-	return *e->xo + e->xd;
+	return *e->yo + e->yd;
 }
 
 /* _pos_y_set() {{{2 */
@@ -195,13 +195,13 @@ entity_pos_y_set(
 	    return e->yd = i;
 }
 
-/* _pos_y() {{{2 */
+/* _pos_x() {{{2 */
 int
 entity_pos_x(
     const entity_t *const	e)
 {
 	assert (e);
-	return *e->yo + e->yd;
+	return *e->xo + e->xd;
 }
 
 /* _pos_x_set() {{{2 */
