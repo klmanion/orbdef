@@ -168,7 +168,7 @@ shell_free(
 }
 
 /* accessors {{{1 */
-/* _image()
+/* _image() {{{2
  */
 char**
 shell_image(
@@ -178,7 +178,7 @@ shell_image(
 	return tab[sh->radius];
 }
 
-/* _rows()
+/* _rows() {{{2
  */
 int
 shell_rows(
@@ -190,7 +190,7 @@ shell_rows(
 	return ptr - img;
 }
 
-/* _cols()
+/* _cols() {{{2
  */
 int
 shell_cols(
@@ -199,7 +199,7 @@ shell_cols(
 	return strlen(*shell_image(sh));
 }
 
-/* walls_num()
+/* walls_num() {{{2
  */
 int
 shell_walls_num(
