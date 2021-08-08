@@ -19,7 +19,7 @@ orbdef()
 {
 	int row,col;
 	tower_t spire;
-	int ch;
+	chtype ch;
 
 	memset(tower_lst, (int)NULL, 8);
 	tower_num = 0;
