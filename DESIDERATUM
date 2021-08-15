@@ -313,3 +313,44 @@ UPDATE:
 
 Both sides will be controllable.
 
+================
+= II: Redesign =
+================
+
+The game is now concieved of as being more heavily seige based.
+The tower's function is to control troops and form a defensive boundary.
+
+The win condition is to destroy all of the enemy structures.
+
+The player may choose to play the center or the fringe.
+
+Both sides will autopilot using the same AI, so intervention can help or hurt.
+
+
+
+There will be ledgends over the weapons weilded and lost.
+Stories over the heros vanquished.
+Though some might try to succeed by numbers alone,
+       through blood and honor some of the most memorable balles will be made.
+
+Soldiers are hard to come by.  They must be trained from the chum that a less
+attentive player may ruthlessly churn through.
+Such chum that seems to show potential will have to be preserved and healed to
+gain experience on another day.
+
+In the meantime the standard outfit for our troops can be upgraded.
+Beware though, this will make the cost of the standard unit increase which can
+cause costs to skyrocket if the number of trained units isn't balanced against
+the new gear quota.
+
+Towers produce coins equal to the sum of the radii every pay cycle.
+
+Coin can also be obtained by selling stock.
+
+Stockpiled gear comes not only from excess in the quota but from scavenging
+dead bodies.  This is not possible in combat, so the win has to be outright for
+the troops to be able to scavange and return.
+
+A squad of units can be created to command multiple units as one entity.
+Chum are only controllable as squads.
+Soldiers may be micromanaged.
