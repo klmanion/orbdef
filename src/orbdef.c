@@ -15,10 +15,11 @@
 typedef
 struct Common
 {
-	tower_t	*spire;
+	tower_t	*p0_tl[9];	/* player tower list */
+	int	 p0_tn;		/* number of player towers */
 
-	tower_t	*tower_lst[8];
-	int	 tower_num;
+	tower_t	*p1_tl[9];	/* enemy tower list */
+	int	 p1_tn;		/* number of enemy towers */
 } common_data_t;
 
 static	screen_t	*battle =	(screen_t *)NULL;
@@ -33,15 +34,11 @@ battle_run(
 	screen_data_t data;
 	common_data_t *cmn;
 
-	tower_t *spire;
-
 	chtype ch;
 	screen_t *retv;
 
 	data = (screen_data_t)scr->data;
 	cmn = (common_data_t *)vptr;
-
-	spire = cmn->spire;
 
 	retv = scr;
 
@@ -50,7 +47,10 @@ battle_run(
 		/* drawing */
 		clear();
 
-		tower_draw(spire);
+		for (size_t n=0; n<cmn->p0_tn; ++n)
+		    tower_draw(cmn->p0_tl[n]);
+		for (size_t n=0; n<cmn->p1_tn; ++n)
+		    tower_draw(cmn->p1_tl[n]);
 
 		refresh();
 
@@ -80,9 +80,9 @@ twr_select_run(
 
 	int rows,cols;
 	static entity_t cursor;
+	int selecting_for;
 
 	chtype ch;
-	screen_t *retv;
 
 	data = (screen_data_t)scr->data;
 	cmn = (common_data_t *)vptr;
@@ -90,16 +90,16 @@ twr_select_run(
 	getmaxyx(stdscr, rows,cols);
 	entity_init(&cursor, rows/2,cols/2);
 
-	retv = scr;
+	selecting_for = 0;
 
 	for (bool running=true; running; )
 	    {
 		clear();
 
-		tower_draw(cmn->spire);
-
-		for (size_t n=0; n<cmn->tower_num; ++n)
-		    tower_draw(cmn->tower_lst[n]);
+		for (size_t n=0; n<cmn->p0_tn; ++n)
+		    tower_draw(cmn->p0_tl[n]);
+		for (size_t n=0; n<cmn->p1_tn; ++n)
+		    tower_draw(cmn->p1_tl[n]);
 
 		move(entity_pos_y(&cursor),entity_pos_x(&cursor));
 		addch(inch() & A_CHARTEXT | A_REVERSE);
@@ -109,7 +109,6 @@ twr_select_run(
 		switch ((ch = getch())) {
 		case KEY_F(1):
 			running = false;
-			retv = battle;
 			break;;
 
 		/* TODO: may not create tower in spire's radius */
@@ -137,10 +136,24 @@ twr_select_run(
 			entity_mvdir(&cursor, dir_br, 1);	break;;
 
 		case '\r':	/* place tower */
-			cmn->tower_lst[cmn->tower_num++] = 
-				tower_init(NULL,
-					   entity_pos_y(&cursor),
-					   entity_pos_x(&cursor));
+			if (selecting_for == 0)
+			    {
+				cmn->p0_tl[cmn->p0_tn++] =
+					tower_init(NULL,
+						   entity_pos_y(&cursor),
+						   entity_pos_x(&cursor));
+
+				selecting_for = 1;
+			    }
+			else if (selecting_for == 1)
+			    {
+				cmn->p1_tl[cmn->p1_tn++] =
+					tower_init(NULL,
+						   entity_pos_y(&cursor),
+						   entity_pos_x(&cursor));
+
+				running = false;
+			    }
 			break;;
 
 		default:
@@ -148,7 +161,9 @@ twr_select_run(
 		}
 	    }
 
-	return retv;
+	entity_deinit(&cursor);
+
+	return battle;
 }
 
 /* orbdef() {{{1 */
@@ -158,7 +173,6 @@ orbdef()
 	screen_t *scr, *nscr;
 	common_data_t cmn;
 	int rows,cols;
-	tower_t spire;
 	getmaxyx(stdscr, rows,cols);
 
 	screen_init(screen_alloc(&battle),
@@ -168,25 +182,17 @@ orbdef()
 		    (screen_data_t)NULL,
 		    twr_select_run);
 
-//	memset(tower_lst, (int)NULL, 8);
-//	tower_num = 0;
+	cmn.p0_tn = 0;
+	cmn.p1_tn = 0;
 
-	tower_init(&spire, rows/2,cols/2);
-
-//	tower_shell_add(&spire, shell_init(NULL, 0, 0,0));
-	tower_shell_add(&spire, shell_init(NULL, 1, 0,0));
-	tower_shell_add(&spire, shell_init(NULL, 2, 0,0));
-	tower_shell_add(&spire, shell_init(NULL, 3, 0,0));
-
-	cmn.spire = &spire;
-	cmn.tower_num = 0;
-
-	/* place surrounding towers */
 	scr = twr_select;
 
 	while ((nscr = screen_run(scr, (void *)&cmn))) { scr = nscr; }
 
-	tower_deinit(&spire);
+	for (size_t n=0; n<cmn.p0_tn; ++n)
+	    tower_free(&cmn.p0_tl[n]);
+	for (size_t n=0; n<cmn.p1_tn; ++n)
+	    tower_free(&cmn.p1_tl[n]);
 
 	twr_select = screen_free(&twr_select);
 	battle = screen_free(&battle);
