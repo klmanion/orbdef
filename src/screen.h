@@ -12,7 +12,7 @@ typedef struct Screen* (*screen_funct_t)(struct Screen *,void *);
 typedef
 struct Screen
 {
-	screen_data_t	data;	/* environment common among screens */
+	screen_data_t	data;	/* environment belonging to screen */
 	screen_funct_t	run;
 } screen_t;
 
