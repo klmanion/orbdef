@@ -90,7 +90,7 @@ twr_select_run(
 	getmaxyx(stdscr, rows,cols);
 	entity_init(&cursor, rows/2,cols/2);
 
-	selecting_for = 0;
+	selecting_for = 1;	/* select enemy position first */
 
 	for (bool running=true; running; )
 	    {
@@ -136,18 +136,20 @@ twr_select_run(
 			entity_mvdir(&cursor, dir_br, 1);	break;;
 
 		case '\r':	/* place tower */
-			if (selecting_for == 0)
+			if (selecting_for == 1)
 			    {
-				cmn->p0_tl[cmn->p0_tn++] =
+				cmn->p1_tl[cmn->p1_tn++] =
 					tower_init(NULL,
 						   entity_pos_y(&cursor),
 						   entity_pos_x(&cursor));
 
-				selecting_for = 1;
+				cmn->p1_tl[cmn->p1_tn-1]->is_enemy = true;
+
+				selecting_for = 0;
 			    }
-			else if (selecting_for == 1)
+			else if (selecting_for == 0)
 			    {
-				cmn->p1_tl[cmn->p1_tn++] =
+				cmn->p0_tl[cmn->p0_tn++] =
 					tower_init(NULL,
 						   entity_pos_y(&cursor),
 						   entity_pos_x(&cursor));

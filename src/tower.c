@@ -7,6 +7,7 @@
 #include <ncurses.h>
 #include <assert.h>
 #include <err.h>
+#include "clrpr.h"
 
 /* memory allocation {{{1 */
 /* _alloc() {{{2
@@ -48,6 +49,8 @@ tower_init(
 
 	tower->shell_num = 0;
 	tower_shell_add(tower, shell_init(shell_alloc(&shell), 0, 0,0));
+
+	tower->is_enemy = false;
 
 	return tower;
 }
@@ -115,9 +118,15 @@ tower_draw(
 {
 	assert(t);
 
+	if (t->is_enemy)
+	    attron(CLR(ENEMY));
+
 	for (size_t i=0; i<t->shell_num; ++i)
 	    shell_draw(t->shell_lst[i]);
 
+	if (t->is_enemy)
+	    attroff(CLR(ENEMY));
+	
 	return;
 }
 

@@ -5,6 +5,7 @@
 #define _TOWER_H_
 
 #include <stdlib.h>
+#include <stdbool.h>
 #include "shell.h"
 
 typedef
@@ -12,6 +13,8 @@ struct Tower
 {
 	shell_t	*shell_lst[4];
 	int	 shell_num;
+
+	bool	is_enemy;
 
 	entity_t	*e;
 } tower_t;
