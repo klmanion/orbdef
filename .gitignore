@@ -10,3 +10,6 @@ orbdef
 
 # ctags
 tags
+
+# cscope
+cscope.out
