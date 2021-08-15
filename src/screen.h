@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 typedef	void *	screen_data_t;
-typedef struct Screen* (*screen_funct_t)(struct Screen *const,void *);
+typedef struct Screen* (*screen_funct_t)(struct Screen *,void *);
 
 typedef
 struct Screen
@@ -21,7 +21,7 @@ screen_t*	screen_init (screen_t *,screen_data_t,screen_funct_t);
 screen_t*	screen_deinit (screen_t *);
 screen_t*	screen_free (screen_t **);
 
-screen_t*	screen_run (screen_t *const,void *);
+screen_t*	screen_run (screen_t *,void *);
 
 #endif /* !_SCREEN_H_ */
 

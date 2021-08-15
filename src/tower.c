@@ -39,13 +39,15 @@ tower_init(
     const int	 y,
     const int	 x)
 {
+	shell_t *shell;
+
 	if (!tower)
 	    tower = tower_alloc(NULL);
 
 	entity_init(entity_alloc(&tower->e), y,x);
 
-	memset(tower->shell_lst, (int)NULL, 4);
 	tower->shell_num = 0;
+	tower_shell_add(tower, shell_init(shell_alloc(&shell), 0, 0,0));
 
 	return tower;
 }
