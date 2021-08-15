@@ -218,13 +218,12 @@ entity_pos_x_set(
 	    return e->xd = i;
 }
 
-/* movement {{{1 */
-/* _move() {{{2
+/* _pos_set() {{{2
  * 	Moves the entity.
  * 	Movement must be checked by calling function.
  */
 entity_t*
-entity_move(
+entity_pos_set(
     entity_t *const	e,
     const int		y,
     const int		x)

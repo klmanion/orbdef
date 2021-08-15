@@ -42,7 +42,7 @@ int	entity_pos_y_set (entity_t *const,const int);
 int	entity_pos_x (const entity_t *const);
 int	entity_pos_x_set (entity_t *const,const int);
 
-entity_t*	entity_move (entity_t *const,const int,const int);
+entity_t*	entity_pos_set (entity_t *const,const int,const int);
 entity_t*	entity_delta (entity_t *const,const int,const int);
 entity_t*	entity_mvdir (entity_t *const,const dir_t,const int);
 
