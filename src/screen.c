@@ -33,12 +33,14 @@ screen_alloc(
 screen_t*
 screen_init(
     screen_t		*screen,
+    void		*cmn,
     screen_data_t	 data,
     screen_funct_t	 run)
 {
 	if (!screen)
 	    screen = screen_alloc(NULL);
 
+	screen->cmn = cmn;
 	screen->data = data;
 	screen->run = run;
 

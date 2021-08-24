@@ -12,12 +12,13 @@ typedef struct Screen* (*screen_funct_t)(struct Screen *,void *);
 typedef
 struct Screen
 {
-	screen_data_t	data;	/* environment belonging to screen */
-	screen_funct_t	run;
+	void		*cmn;	/* environment common to all screens */
+	screen_data_t	 data;	/* environment belonging to screen */
+	screen_funct_t	 run;
 } screen_t;
 
 screen_t*	screen_alloc (screen_t **);
-screen_t*	screen_init (screen_t *,screen_data_t,screen_funct_t);
+screen_t*	screen_init (screen_t *,void *,screen_data_t,screen_funct_t);
 screen_t*	screen_deinit (screen_t *);
 screen_t*	screen_free (screen_t **);
 

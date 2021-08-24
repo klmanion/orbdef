@@ -178,9 +178,11 @@ orbdef()
 	getmaxyx(stdscr, rows,cols);
 
 	screen_init(screen_alloc(&battle),
+		    &cmn,
 		    (screen_data_t)NULL,
 		    battle_run);
 	screen_init(screen_alloc(&twr_select),
+		    &cmn,
 		    (screen_data_t)NULL,
 		    twr_select_run);
 
