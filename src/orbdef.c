@@ -24,6 +24,7 @@ struct Common
 
 static	screen_t	*battle =	(screen_t *)NULL;
 static	screen_t	*twr_select =	(screen_t *)NULL;
+static	screen_t	*selection =	(screen_t *)NULL;
 
 /* battle_run() {{{1 */
 screen_t*
@@ -168,6 +169,46 @@ twr_select_run(
 	return battle;
 }
 
+/* selection() {{{1 */
+screen_t*
+selection_run(
+    screen_t	*scr,
+    void	*vptr)
+{
+	common_data_t *cmn;
+	screen_data_t data;
+
+	int rows,cols;
+	
+	chtype ch;
+
+	cmn = (common_data_t *)scr->cmn;
+	data = (screen_data_t)scr->data;
+
+	getmaxyx(stdscr, rows,cols);
+
+	for (bool running=true; running; )
+	    {
+		clear();
+
+		for (size_t n=0; n<cmn->p0_tn; ++n)
+		    tower_draw(cmn->p0_tl[n]);
+		for (size_t n=0; n<cmn->p1_tn; ++n)
+		    tower_draw(cmn->p1_tl[n]);
+
+		refresh();
+
+		switch ((ch = getch())) {
+		case KEY_F(1):
+			running = false;
+			break;;
+
+		}
+	    }
+
+	return scr;
+}
+
 /* orbdef() {{{1 */
 int
 orbdef()
@@ -182,6 +223,10 @@ orbdef()
 		    (screen_data_t)NULL,
 		    battle_run);
 	screen_init(screen_alloc(&twr_select),
+		    (void *)&cmn,
+		    (screen_data_t)NULL,
+		    twr_select_run);
+	screen_init(screen_alloc(&selection),
 		    (void *)&cmn,
 		    (screen_data_t)NULL,
 		    twr_select_run);
