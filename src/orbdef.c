@@ -172,7 +172,7 @@ twr_select_run(
 int
 orbdef()
 {
-	screen_t *scr, *nscr;
+	screen_t *scr;
 	common_data_t cmn;
 	int rows,cols;
 	getmaxyx(stdscr, rows,cols);
@@ -189,7 +189,7 @@ orbdef()
 
 	scr = twr_select;
 
-	while ((nscr = screen_run(scr, (void *)&cmn))) { scr = nscr; }
+	while ((scr = screen_run(scr, (void *)&cmn))) { }
 
 	for (size_t n=0; n<cmn.p0_tn; ++n)
 	    tower_free(&cmn.p0_tl[n]);
