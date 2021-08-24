@@ -31,14 +31,14 @@ battle_run(
     screen_t	*scr,
     void	*vptr)
 {
-	screen_data_t data;
 	common_data_t *cmn;
+	screen_data_t data;
 
 	chtype ch;
 	screen_t *retv;
 
+	cmn = (common_data_t *)scr->cmn;
 	data = (screen_data_t)scr->data;
-	cmn = (common_data_t *)vptr;
 
 	retv = scr;
 
@@ -75,8 +75,8 @@ twr_select_run(
     screen_t	*scr,
     void	*vptr)
 {
-	screen_data_t data;
 	common_data_t *cmn;
+	screen_data_t data;
 
 	int rows,cols;
 	static entity_t cursor;
@@ -84,8 +84,8 @@ twr_select_run(
 
 	chtype ch;
 
+	cmn = (common_data_t *)scr->cmn;
 	data = (screen_data_t)scr->data;
-	cmn = (common_data_t *)vptr;
 
 	getmaxyx(stdscr, rows,cols);
 	entity_init(&cursor, rows/2,cols/2);
@@ -178,11 +178,11 @@ orbdef()
 	getmaxyx(stdscr, rows,cols);
 
 	screen_init(screen_alloc(&battle),
-		    &cmn,
+		    (void *)&cmn,
 		    (screen_data_t)NULL,
 		    battle_run);
 	screen_init(screen_alloc(&twr_select),
-		    &cmn,
+		    (void *)&cmn,
 		    (screen_data_t)NULL,
 		    twr_select_run);
 
@@ -191,7 +191,7 @@ orbdef()
 
 	scr = twr_select;
 
-	while ((scr = screen_run(scr, (void *)&cmn))) { }
+	while ((scr = screen_run(scr, NULL))) { }
 
 	for (size_t n=0; n<cmn.p0_tn; ++n)
 	    tower_free(&cmn.p0_tl[n]);
