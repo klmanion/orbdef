@@ -50,6 +50,7 @@ tower_init(
 	tower->shell_num = 0;
 	tower_shell_add(tower, shell_init(shell_alloc(&shell), 0, 0,0));
 
+	tower->id = '0';	/* TODO: pool of ids */
 	tower->is_enemy = false;
 
 	return tower;

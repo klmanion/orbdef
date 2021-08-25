@@ -11,6 +11,7 @@
 #include "entity.h"	/* may remove after cursor is implemented */
 #include "tower.h"
 #include "screen.h"
+#include "clrpr.h"
 
 typedef
 struct Common
@@ -60,6 +61,10 @@ battle_run(
 		case KEY_F(1):
 			running = false;
 			retv = (screen_t *)NULL;
+			break;;
+
+		case 's':
+			screen_run(selection, NULL);
 			break;;
 
 		default:
@@ -179,22 +184,74 @@ selection_run(
 	screen_data_t data;
 
 	int rows,cols;
-	
 	chtype ch;
+
+	enum {
+		friend=6,
+		enemy,
+		squad,
+		item
+	} selecting;
+
+	bool blink;
+	int bctr,btmr;	/* blink timer */
 
 	cmn = (common_data_t *)scr->cmn;
 	data = (screen_data_t)scr->data;
 
 	getmaxyx(stdscr, rows,cols);
 
+	selecting = friend;
+
+	blink = false;
+	bctr = 0;
+	btmr = 5;
+
 	for (bool running=true; running; )
 	    {
 		clear();
+
+		mvprintw(0,0, "selecting");
 
 		for (size_t n=0; n<cmn->p0_tn; ++n)
 		    tower_draw(cmn->p0_tl[n]);
 		for (size_t n=0; n<cmn->p1_tn; ++n)
 		    tower_draw(cmn->p1_tl[n]);
+
+		if (!blink)
+		    {
+			switch (selecting) {
+			case friend:
+				for (size_t n=0; n<cmn->p0_tn; ++n)
+				    {
+					tower_t *t;
+
+					t = cmn->p0_tl[n];
+
+					attrset(0);
+					attron(CLR(SELECT_FRIEND));
+
+					mvprintw(entity_pos_y(t->e),
+						 entity_pos_x(t->e),
+						 "%c", t->id);
+
+					attrset(0);	/* TODO: remove after
+							   other printing code
+							   uses attrset(0) */
+
+				    }
+
+				if (++bctr >= btmr)
+				    blink = true;
+
+				break;;
+			}
+		    }
+		else
+		    {
+			blink = false;
+			bctr = 0;
+		    }
 
 		refresh();
 
@@ -203,6 +260,11 @@ selection_run(
 			running = false;
 			break;;
 
+		case '`':
+			return NULL;
+
+		default:
+			break;;
 		}
 	    }
 
@@ -229,7 +291,7 @@ orbdef()
 	screen_init(screen_alloc(&selection),
 		    (void *)&cmn,
 		    (screen_data_t)NULL,
-		    twr_select_run);
+		    selection_run);
 
 	cmn.p0_tn = 0;
 	cmn.p1_tn = 0;
@@ -243,6 +305,7 @@ orbdef()
 	for (size_t n=0; n<cmn.p1_tn; ++n)
 	    tower_free(&cmn.p1_tl[n]);
 
+	selection = screen_free(&selection);
 	twr_select = screen_free(&twr_select);
 	battle = screen_free(&battle);
 

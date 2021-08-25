@@ -14,6 +14,7 @@ struct Tower
 	shell_t	*shell_lst[4];
 	int	 shell_num;
 
+	char	id;
 	bool	is_enemy;
 
 	entity_t	*e;
