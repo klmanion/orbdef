@@ -11,6 +11,11 @@
 #define CLRPR_GREEN 4
 #define CLRPR_MAGENTA 5
 
+#define CLRPR_SELECT_FRIEND 6
+#define CLRPR_SELECT_ENEMY 7
+#define CLRPR_SELECT_SQUAD 8
+#define CLRPR_SELECT_ITEM 9
+
 #define CLR(x) COLOR_PAIR(CLRPR_ ## x)
 
 /* vi: set ts=8 sw=8 noexpandtab tw=79: */

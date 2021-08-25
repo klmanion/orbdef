@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <ncurses.h>
+#include "clrpr.h"
 #include "orbdef.h"
 
 #include "soldier.h"
@@ -32,12 +33,17 @@ main(
 	curs_set(0);
 
 	start_color();
-	init_pair(0, COLOR_WHITE, COLOR_BLACK);
-	init_pair(1, COLOR_RED, COLOR_BLACK);
-	init_pair(2, COLOR_YELLOW, COLOR_BLACK);
-	init_pair(3, COLOR_BLUE, COLOR_BLACK);
-	init_pair(4, COLOR_GREEN, COLOR_BLACK);
-	init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
+	init_pair(CLRPR_WHITE,		COLOR_WHITE,	COLOR_BLACK);
+	init_pair(CLRPR_RED,		COLOR_RED,	COLOR_BLACK);
+	init_pair(CLRPR_BROWN,		COLOR_YELLOW,	COLOR_BLACK);
+	init_pair(CLRPR_BLUE,		COLOR_BLUE,	COLOR_BLACK);
+	init_pair(CLRPR_GREEN,		COLOR_GREEN,	COLOR_BLACK);
+	init_pair(CLRPR_MAGENTA,	COLOR_MAGENTA,	COLOR_BLACK);
+
+	init_pair(CLRPR_SELECT_FRIEND,	COLOR_BLACK,	COLOR_GREEN);
+	init_pair(CLRPR_SELECT_ENEMY,	COLOR_BLACK,	COLOR_RED);
+	init_pair(CLRPR_SELECT_SQUAD,	COLOR_BLACK,	COLOR_YELLOW);
+	init_pair(CLRPR_SELECT_ITEM,	COLOR_BLACK,	COLOR_BLUE);
 
 	refresh();
 
