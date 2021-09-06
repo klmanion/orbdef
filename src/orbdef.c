@@ -24,7 +24,7 @@ struct Common
 } common_data_t;
 
 static	screen_t	*battle =	(screen_t *)NULL;
-static	screen_t	*twr_select =	(screen_t *)NULL;
+static	screen_t	*stage_set=	(screen_t *)NULL;
 static	screen_t	*selection =	(screen_t *)NULL;
 
 /* battle_run() {{{1 */
@@ -75,9 +75,9 @@ battle_run(
 	return retv;
 }
 
-/* twr_select_run() {{{1 */
+/* stage_set_run() {{{1 */
 screen_t*
-twr_select_run(
+stage_set_run(
     screen_t	*scr,
     void	*vptr)
 {
@@ -290,10 +290,10 @@ orbdef()
 		    (void *)&cmn,
 		    (screen_data_t)NULL,
 		    battle_run);
-	screen_init(screen_alloc(&twr_select),
+	screen_init(screen_alloc(&stage_set),
 		    (void *)&cmn,
 		    (screen_data_t)NULL,
-		    twr_select_run);
+		    stage_set_run);
 	screen_init(screen_alloc(&selection),
 		    (void *)&cmn,
 		    (screen_data_t)NULL,
@@ -302,7 +302,7 @@ orbdef()
 	cmn.p0_tn = 0;
 	cmn.p1_tn = 0;
 
-	scr = twr_select;
+	scr = stage_set;
 
 	while ((scr = screen_run(scr, NULL))) { }
 
@@ -312,7 +312,7 @@ orbdef()
 	    tower_free(&cmn.p1_tl[n]);
 
 	selection = screen_free(&selection);
-	twr_select = screen_free(&twr_select);
+	stage_set = screen_free(&stage_set);
 	battle = screen_free(&battle);
 
 	return 1;
