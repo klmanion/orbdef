@@ -9,6 +9,25 @@
 #include <err.h>
 #include "clrpr.h"
 
+static	char	id_lst[2][62] = {
+	    {
+		'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+		'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+		'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+		'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+	    },
+	    {
+		'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+		'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+		'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+		'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+	    }
+};
+static	size_t	id_n_plr = 0;
+static	size_t	id_n_enmy = 0;
+
 /* memory allocation {{{1 */
 /* _alloc() {{{2
  * 	Allocate memory for a Tower struct.
@@ -38,9 +57,11 @@ tower_t*
 tower_init(
     tower_t 	*tower,
     const int	 y,
-    const int	 x)
+    const int	 x,
+    const bool	 is_enemy)
 {
 	shell_t *shell;
+	size_t *id_n;
 
 	if (!tower)
 	    tower = tower_alloc(NULL);
@@ -50,8 +71,14 @@ tower_init(
 	tower->shell_num = 0;
 	tower_shell_add(tower, shell_init(shell_alloc(&shell), 0, 0,0));
 
-	tower->id = '0';	/* TODO: pool of ids */
-	tower->is_enemy = false;
+	tower->is_enemy = is_enemy;
+
+	if (!tower->is_enemy)
+	    id_n = &id_n_plr;
+	else
+	    id_n = &id_n_enmy;
+
+	tower->id = id_lst[tower->is_enemy][(*id_n)++];
 
 	return tower;
 }

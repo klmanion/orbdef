@@ -21,7 +21,7 @@ struct Tower
 } tower_t;
 
 tower_t*	tower_alloc (tower_t **);
-tower_t*	tower_init (tower_t *,const int,const int);
+tower_t*	tower_init (tower_t *,const int,const int,const bool);
 tower_t*	tower_deinit (tower_t *);
 tower_t*	tower_free (tower_t **);
 

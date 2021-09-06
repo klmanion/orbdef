@@ -149,16 +149,16 @@ stage_set_run(
 				cmn->p0_tl[cmn->p0_tn++] =
 					tower_init(NULL,
 						   entity_pos_y(&cursor),
-						   entity_pos_x(&cursor));
+						   entity_pos_x(&cursor),
+						   false);
 			    }
 			else if (selecting_for == sf_enemy)
 			    {
 				cmn->p1_tl[cmn->p1_tn++] =
 					tower_init(NULL,
 						   entity_pos_y(&cursor),
-						   entity_pos_x(&cursor));
-
-				cmn->p1_tl[cmn->p1_tn-1]->is_enemy = true;
+						   entity_pos_x(&cursor),
+						   true);
 			    }
 			break;;
 
@@ -193,7 +193,7 @@ selection_run(
 	chtype ch;
 
 	enum {
-		friend=6,
+		friend=7,
 		enemy,
 		squad,
 		item
@@ -228,14 +228,25 @@ selection_run(
 		    {
 			switch (selecting) {
 			case friend:
+			case enemy:
 				for (size_t n=0; n<cmn->p0_tn; ++n)
 				    {
-					tower_t *t;
+					tower_t **lst, *t;
 
-					t = cmn->p0_tl[n];
+					if (selecting == friend)
+					    lst = cmn->p0_tl;
+					else if (selecting == enemy)
+					    lst = cmn->p1_tl;
+					else
+					    lst = (tower_t **)NULL;
+
+					t = lst[n];
 
 					attrset(0);
-					attron(CLR(SELECT_FRIEND));
+					if (selecting == friend)
+					    attron(CLR(SELECT_FRIEND));
+					else if (selecting == enemy)
+					    attron(CLR(SELECT_ENEMY));
 
 					mvprintw(entity_pos_y(t->e),
 						 entity_pos_x(t->e),
@@ -264,6 +275,13 @@ selection_run(
 		switch ((ch = getch())) {
 		case KEY_F(1):
 			running = false;
+			break;;
+
+		case '-':
+			if (selecting == friend)
+			    selecting = enemy;
+			else if (selecting == enemy)
+			    selecting = friend;
 			break;;
 
 		case '`':
