@@ -86,7 +86,10 @@ twr_select_run(
 
 	int rows,cols;
 	static entity_t cursor;
-	int selecting_for;
+	enum {
+		sf_player=0,
+		sf_enemy=1
+	} selecting_for;
 
 	chtype ch;
 
@@ -96,7 +99,7 @@ twr_select_run(
 	getmaxyx(stdscr, rows,cols);
 	entity_init(&cursor, rows/2,cols/2);
 
-	selecting_for = 1;	/* select enemy position first */
+	selecting_for = sf_player;	/* select enemy position first */
 
 	for (bool running=true; running; )
 	    {
@@ -117,7 +120,6 @@ twr_select_run(
 			running = false;
 			break;;
 
-		/* TODO: may not create tower in spire's radius */
 		/* TODO: bound checking */
 		/* TODO: cursor object */
 		case 'j':
@@ -142,7 +144,14 @@ twr_select_run(
 			entity_mvdir(&cursor, dir_br, 1);	break;;
 
 		case '\r':	/* place tower */
-			if (selecting_for == 1)
+			if (selecting_for == sf_player)
+			    {
+				cmn->p0_tl[cmn->p0_tn++] =
+					tower_init(NULL,
+						   entity_pos_y(&cursor),
+						   entity_pos_x(&cursor));
+			    }
+			else if (selecting_for == sf_enemy)
 			    {
 				cmn->p1_tl[cmn->p1_tn++] =
 					tower_init(NULL,
@@ -150,18 +159,15 @@ twr_select_run(
 						   entity_pos_x(&cursor));
 
 				cmn->p1_tl[cmn->p1_tn-1]->is_enemy = true;
-
-				selecting_for = 0;
 			    }
-			else if (selecting_for == 0)
-			    {
-				cmn->p0_tl[cmn->p0_tn++] =
-					tower_init(NULL,
-						   entity_pos_y(&cursor),
-						   entity_pos_x(&cursor));
+			break;;
 
-				running = false;
-			    }
+		case ' ':	/* switch between player and enemy */
+			selecting_for = !selecting_for;
+			break;;
+
+		case '`':	/* finish */
+			running = false;
 			break;;
 
 		default:
