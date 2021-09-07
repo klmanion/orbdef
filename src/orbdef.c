@@ -7,24 +7,22 @@
 #include <ncurses.h>
 #include <stdbool.h>
 #include <string.h>
+#include "clrpr.h"
+#include "pair.h"
 #include "dir.h"
 #include "entity.h"	/* may remove after cursor is implemented */
 #include "tower.h"
 #include "screen.h"
-#include "clrpr.h"
 
 typedef
 struct Common
 {
-	tower_t	*p0_tl[9];	/* player tower list */
-	int	 p0_tn;		/* number of player towers */
-
-	tower_t	*p1_tl[9];	/* enemy tower list */
-	int	 p1_tn;		/* number of enemy towers */
+	head_t	plr_lst;
+	head_t	enm_lst;
 } common_data_t;
 
 static	screen_t	*battle =	(screen_t *)NULL;
-static	screen_t	*stage_set=	(screen_t *)NULL;
+static	screen_t	*stage_set =	(screen_t *)NULL;
 static	screen_t	*selection =	(screen_t *)NULL;
 
 /* battle_run() {{{1 */
@@ -35,6 +33,8 @@ battle_run(
 {
 	common_data_t *cmn;
 	screen_data_t data;
+
+	pair_t *var;
 
 	chtype ch;
 	screen_t *retv;
@@ -49,11 +49,24 @@ battle_run(
 		/* drawing */
 		clear();
 
-		for (size_t n=0; n<cmn->p0_tn; ++n)
-		    tower_draw(cmn->p0_tl[n]);
-		for (size_t n=0; n<cmn->p1_tn; ++n)
-		    tower_draw(cmn->p1_tl[n]);
+		STAILQ_FOREACH(var, &cmn->plr_lst, cdr)
+		    {
+			tower_t *t;
 
+			t = (tower_t *)var->car;
+
+			tower_draw(t);
+		    }
+
+		STAILQ_FOREACH(var, &cmn->enm_lst, cdr)
+		    {
+			tower_t *t;
+
+			t = (tower_t *)var->car;
+
+			tower_draw(t);
+		    }
+		
 		refresh();
 
 		/* polling/handling */
@@ -84,6 +97,8 @@ stage_set_run(
 	common_data_t *cmn;
 	screen_data_t data;
 
+	pair_t *var, *p;
+
 	int rows,cols;
 	static entity_t cursor;
 	enum {
@@ -105,10 +120,14 @@ stage_set_run(
 	    {
 		clear();
 
-		for (size_t n=0; n<cmn->p0_tn; ++n)
-		    tower_draw(cmn->p0_tl[n]);
-		for (size_t n=0; n<cmn->p1_tn; ++n)
-		    tower_draw(cmn->p1_tl[n]);
+		STAILQ_FOREACH(var, &cmn->plr_lst, cdr)
+		    {
+			tower_draw((tower_t *)var->car);
+		    }
+		STAILQ_FOREACH(var, &cmn->enm_lst, cdr)
+		    {
+			tower_draw((tower_t *)var->car);
+		    }
 
 		move(entity_pos_y(&cursor),entity_pos_x(&cursor));
 		addch(inch() & A_CHARTEXT | A_REVERSE);
@@ -144,22 +163,13 @@ stage_set_run(
 			entity_mvdir(&cursor, dir_br, 1);	break;;
 
 		case '\r':	/* place tower */
-			if (selecting_for == sf_player)
-			    {
-				cmn->p0_tl[cmn->p0_tn++] =
-					tower_init(NULL,
-						   entity_pos_y(&cursor),
-						   entity_pos_x(&cursor),
-						   false);
-			    }
-			else if (selecting_for == sf_enemy)
-			    {
-				cmn->p1_tl[cmn->p1_tn++] =
-					tower_init(NULL,
-						   entity_pos_y(&cursor),
-						   entity_pos_x(&cursor),
-						   true);
-			    }
+			p = pair_init_car(NULL,
+					  (void *)tower_init(NULL,
+							     entity_pos_y(&cursor),
+							     entity_pos_x(&cursor),
+							     (bool)selecting_for));
+
+			STAILQ_INSERT_TAIL(selecting_for == sf_player ? &cmn->plr_lst : &cmn->enm_lst, p, cdr);
 			break;;
 
 		case ' ':	/* switch between player and enemy */
@@ -180,7 +190,7 @@ stage_set_run(
 	return battle;
 }
 
-/* selection() {{{1 */
+/* selection_run() {{{1 */
 screen_t*
 selection_run(
     screen_t	*scr,
@@ -188,6 +198,11 @@ selection_run(
 {
 	common_data_t *cmn;
 	screen_data_t data;
+
+	pair_t *var;
+	head_t *lst;
+
+	int acc;
 
 	int rows,cols;
 	chtype ch;
@@ -199,6 +214,8 @@ selection_run(
 		item
 	} selecting;
 
+	tower_t *target;
+
 	bool blink;
 	int bctr,btmr;	/* blink timer */
 
@@ -209,6 +226,8 @@ selection_run(
 
 	selecting = friend;
 
+	target = (tower_t *)NULL;
+
 	blink = false;
 	bctr = 0;
 	btmr = 5;
@@ -217,45 +236,47 @@ selection_run(
 	    {
 		clear();
 
-		mvprintw(0,0, "selecting");
-
-		for (size_t n=0; n<cmn->p0_tn; ++n)
-		    tower_draw(cmn->p0_tl[n]);
-		for (size_t n=0; n<cmn->p1_tn; ++n)
-		    tower_draw(cmn->p1_tl[n]);
-
+		STAILQ_FOREACH(var, &cmn->plr_lst, cdr)
+		    {
+			tower_draw((tower_t *)var->car);
+		    }
+		STAILQ_FOREACH(var, &cmn->enm_lst, cdr)
+		    {
+			tower_draw((tower_t *)var->car);
+		    }
+		
 		if (!blink)
 		    {
 			switch (selecting) {
 			case friend:
 			case enemy:
-				for (size_t n=0; n<cmn->p0_tn; ++n)
+				if (selecting == friend)
+				    lst = &cmn->plr_lst;
+				else
+				    lst = &cmn->enm_lst;
+
+				acc = '0';
+				STAILQ_FOREACH(var, lst, cdr)
 				    {
-					tower_t **lst, *t;
+					tower_t *t;
 
-					if (selecting == friend)
-					    lst = cmn->p0_tl;
-					else if (selecting == enemy)
-					    lst = cmn->p1_tl;
-					else
-					    lst = (tower_t **)NULL;
-
-					t = lst[n];
-
-					attrset(0);
 					if (selecting == friend)
 					    attron(CLR(SELECT_FRIEND));
 					else if (selecting == enemy)
 					    attron(CLR(SELECT_ENEMY));
 
+					t = (tower_t *)var->car;
 					mvprintw(entity_pos_y(t->e),
 						 entity_pos_x(t->e),
-						 "%c", t->id);
+						 "%c", acc++);
 
-					attrset(0);	/* TODO: remove after
-							   other printing code
-							   uses attrset(0) */
+					if (selecting == friend)
+					    attroff(CLR(SELECT_FRIEND));
+					else if (selecting == enemy)
+					    attroff(CLR(SELECT_ENEMY));
 
+					if (acc == '9'+1)
+					    acc = 'a';
 				    }
 
 				if (++bctr >= btmr)
@@ -301,7 +322,10 @@ orbdef()
 {
 	screen_t *scr;
 	common_data_t cmn;
+	pair_t *var, *tvar;
 	int rows,cols;
+
+
 	getmaxyx(stdscr, rows,cols);
 
 	screen_init(screen_alloc(&battle),
@@ -317,18 +341,22 @@ orbdef()
 		    (screen_data_t)NULL,
 		    selection_run);
 
-	cmn.p0_tn = 0;
-	cmn.p1_tn = 0;
+	STAILQ_INIT(&cmn.plr_lst);
+	STAILQ_INIT(&cmn.enm_lst);
 
 	scr = stage_set;
 
 	while ((scr = screen_run(scr, NULL))) { }
 
-	for (size_t n=0; n<cmn.p0_tn; ++n)
-	    tower_free(&cmn.p0_tl[n]);
-	for (size_t n=0; n<cmn.p1_tn; ++n)
-	    tower_free(&cmn.p1_tl[n]);
-
+	STAILQ_FOREACH_SAFE(var, &cmn.plr_lst, cdr, tvar)
+	    {
+		tower_free((tower_t **)&var->car);
+	    }
+	STAILQ_FOREACH_SAFE(var, &cmn.enm_lst, cdr, tvar)
+	    {
+		tower_free((tower_t **)&var->car);
+	    }
+	    
 	selection = screen_free(&selection);
 	stage_set = screen_free(&stage_set);
 	battle = screen_free(&battle);
