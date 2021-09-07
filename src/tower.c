@@ -65,6 +65,8 @@ tower_init(
 
 	tower->id = (*id_n)++;
 
+	stbl_init_roll(&tower->stbl);
+
 	return tower;
 }
 
@@ -123,7 +125,7 @@ tower_shell_add(
 }
 
 /* printing {{{1 */
-/* _print() {{{2
+/* _draw() {{{2
  */
 void
 tower_draw(
@@ -141,6 +143,18 @@ tower_draw(
 	    attroff(CLR(ENEMY));
 	
 	return;
+}
+
+/* id_char() {{{2
+ */
+char
+id_char(
+    const int	id)
+{
+	if (id <= 9)
+	    return id + '0';
+	else
+	    return id + 'a';
 }
 
 /* vi: set ts=8 sw=8 noexpandtab tw=79: */

@@ -3,9 +3,11 @@
 
 #include "stbl.h"
 
+#include <ncurses.h>
 #include <assert.h>
 #include <err.h>
 #include "dice.h"
+#include "clrpr.h"
 
 
 /* memory allocation {{{1 */
@@ -35,7 +37,7 @@ stbl_alloc(
 stbl_t*
 stbl_init(
     stbl_t		*stbl,
-    const stat_t	 ATK,
+    const stat_t	 STR,
     const stat_t	 DEX,
     const stat_t	 CON,
     const stat_t	 INT,
@@ -45,7 +47,7 @@ stbl_init(
 	if (!stbl)
 	    stbl = stbl_alloc(NULL);
 
-	stbl->ATK = ATK;
+	stbl->STR = STR;
 	stbl->DEX = DEX;
 	stbl->CON = CON;
 	stbl->INT = INT;
@@ -169,6 +171,29 @@ stbl_calc_hp(
     const int		basehp)
 {
 	return basehp + stat_norm_mod(stbl->CON);
+}
+
+/* printing {{{1 */
+/* _draw() {{{2
+ */
+void
+stbl_draw(
+    const stbl_t *const	stbl,
+    const int		y,
+    const int		x)
+{
+	attron(CLR(DEFAULT));
+
+	move(y,x);
+	printw("STR: %d\tINT: %d", stbl->STR, stbl->INT);
+	move(y+1,x);
+	printw("DEX: %d\tWIS: %d", stbl->DEX, stbl->WIS);
+	move(y+2,x);
+	printw("CON: %d\tCHR: %d", stbl->CON, stbl->CHR);
+
+	attroff(CLR(DEFAULT));
+
+	return;
 }
 
 /* vi: set ts=8 sw=8 noexpandtab tw=79: */

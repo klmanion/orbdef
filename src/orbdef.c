@@ -7,6 +7,7 @@
 #include <ncurses.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 #include "clrpr.h"
 #include "pair.h"
 #include "dir.h"
@@ -51,22 +52,13 @@ battle_run(
 
 		STAILQ_FOREACH(var, &cmn->plr_lst, cdr)
 		    {
-			tower_t *t;
-
-			t = (tower_t *)var->car;
-
-			tower_draw(t);
+			tower_draw((tower_t *)var->car);
 		    }
-
 		STAILQ_FOREACH(var, &cmn->enm_lst, cdr)
 		    {
-			tower_t *t;
-
-			t = (tower_t *)var->car;
-
-			tower_draw(t);
+			tower_draw((tower_t *)var->car);
 		    }
-		
+		    		
 		refresh();
 
 		/* polling/handling */
@@ -268,7 +260,7 @@ selection_run(
 					t = (tower_t *)var->car;
 					mvprintw(entity_pos_y(t->e),
 						 entity_pos_x(t->e),
-						 "%c", acc++);
+						 "%c", id_char(t->id));
 
 					if (selecting == friend)
 					    attroff(CLR(SELECT_FRIEND));
@@ -278,6 +270,19 @@ selection_run(
 					if (acc == '9'+1)
 					    acc = 'a';
 				    }
+
+				if (target)
+				    {
+					attron(CLR(SELECT_TARGET));
+
+					mvprintw(entity_pos_y(target->e),
+						 entity_pos_x(target->e),
+						 "%c", id_char(target->id));
+
+					attroff(CLR(SELECT_TARGET));
+				    }
+
+
 
 				if (++bctr >= btmr)
 				    blink = true;
@@ -291,6 +296,11 @@ selection_run(
 			bctr = 0;
 		    }
 
+		if (target)
+		    {
+			stbl_draw(&target->stbl, rows-5,0);
+		    }
+		
 		refresh();
 
 		switch ((ch = getch())) {
@@ -306,9 +316,32 @@ selection_run(
 			break;;
 
 		case '`':
-			return NULL;
+			if (target)
+			    target = (tower_t *)NULL;
+			else
+			    return NULL;;
+			break;;
 
 		default:
+			if (isalnum(ch))
+			    {
+				int n;
+
+				if (isdigit(ch))
+				    n = ch - '0';
+				else
+				    n = ch - 'a';
+
+				lst = selecting == friend ? &cmn->plr_lst : &cmn->enm_lst;
+
+				STAILQ_FOREACH(var, lst, cdr)
+				    {
+					if (((tower_t *)var->car)->id == n)
+					    target = (tower_t *)var->car;
+				    }
+
+			    }
+
 			break;;
 		}
 	    }

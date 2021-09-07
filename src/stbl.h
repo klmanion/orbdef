@@ -11,7 +11,7 @@ typedef	int	stat_t;
 typedef
 struct Stbl
 {
-	stat_t	ATK;
+	stat_t	STR;
 	stat_t	DEX;
 	stat_t	CON;
 
@@ -29,6 +29,8 @@ stbl_t*	stbl_free (stbl_t **);
 
 int	stat_norm_mod (const stat_t);
 stat_t	stbl_calc_hp (const stbl_t *const,const int);
+
+void	stbl_draw (const stbl_t *const,const int,const int);
 
 #endif /* !_STBL_H_ */
 
