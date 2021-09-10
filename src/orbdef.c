@@ -26,6 +26,22 @@ static	screen_t	*battle =	(screen_t *)NULL;
 static	screen_t	*stage_set =	(screen_t *)NULL;
 static	screen_t	*selection =	(screen_t *)NULL;
 
+/* static helpers {{{1 */
+/* tower_lst_draw() {{{2 */
+void
+tower_lst_draw(
+    head_t *lst)
+{
+	pair_t *var;
+
+	STAILQ_FOREACH(var, lst, cdr)
+	    {
+		tower_draw((tower_t *)var->car);
+	    }
+
+	return;
+}
+
 /* battle_run() {{{1 */
 screen_t*
 battle_run(
@@ -34,8 +50,6 @@ battle_run(
 {
 	common_data_t *cmn;
 	screen_data_t data;
-
-	pair_t *var;
 
 	chtype ch;
 	screen_t *retv;
@@ -50,14 +64,8 @@ battle_run(
 		/* drawing */
 		clear();
 
-		STAILQ_FOREACH(var, &cmn->plr_lst, cdr)
-		    {
-			tower_draw((tower_t *)var->car);
-		    }
-		STAILQ_FOREACH(var, &cmn->enm_lst, cdr)
-		    {
-			tower_draw((tower_t *)var->car);
-		    }
+		tower_lst_draw(&cmn->plr_lst);
+		tower_lst_draw(&cmn->enm_lst);
 		    		
 		refresh();
 
@@ -89,7 +97,7 @@ stage_set_run(
 	common_data_t *cmn;
 	screen_data_t data;
 
-	pair_t *var, *p;
+	pair_t *p;
 
 	int rows,cols;
 	static entity_t cursor;
@@ -112,14 +120,8 @@ stage_set_run(
 	    {
 		clear();
 
-		STAILQ_FOREACH(var, &cmn->plr_lst, cdr)
-		    {
-			tower_draw((tower_t *)var->car);
-		    }
-		STAILQ_FOREACH(var, &cmn->enm_lst, cdr)
-		    {
-			tower_draw((tower_t *)var->car);
-		    }
+		tower_lst_draw(&cmn->plr_lst);
+		tower_lst_draw(&cmn->enm_lst);
 
 		move(entity_pos_y(&cursor),entity_pos_x(&cursor));
 		addch(inch() & A_CHARTEXT | A_REVERSE);
@@ -226,14 +228,8 @@ selection_run(
 	    {
 		clear();
 
-		STAILQ_FOREACH(var, &cmn->plr_lst, cdr)
-		    {
-			tower_draw((tower_t *)var->car);
-		    }
-		STAILQ_FOREACH(var, &cmn->enm_lst, cdr)
-		    {
-			tower_draw((tower_t *)var->car);
-		    }
+		tower_lst_draw(&cmn->plr_lst);
+		tower_lst_draw(&cmn->enm_lst);
 		
 		if (!blink)
 		    {
