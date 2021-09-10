@@ -101,10 +101,12 @@ stage_set_run(
 
 	int rows,cols;
 	static entity_t cursor;
+
 	enum {
 		sf_player=0,
 		sf_enemy=1
 	} selecting_for;
+	int is_enemy;
 
 	chtype ch;
 
@@ -157,11 +159,13 @@ stage_set_run(
 			entity_mvdir(&cursor, dir_br, 1);	break;;
 
 		case '\r':	/* place tower */
+			is_enemy = selecting_for == sf_player ? false : true;
+
 			p = pair_init_car(NULL,
 					  (void *)tower_init(NULL,
 							     entity_pos_y(&cursor),
 							     entity_pos_x(&cursor),
-							     (bool)selecting_for));
+							     is_enemy));
 
 			STAILQ_INSERT_TAIL(selecting_for == sf_player ? &cmn->plr_lst : &cmn->enm_lst, p, cdr);
 			break;;
@@ -246,7 +250,7 @@ selection_run(
 					tower_t *t;
 
 					if (selecting == friend)
-					    attron(CLR(SELECT_FRIEND));
+					    attron(CLR(SELECT_PLAYER));
 					else if (selecting == enemy)
 					    attron(CLR(SELECT_ENEMY));
 
@@ -256,7 +260,7 @@ selection_run(
 						 "%c", id_char(t->id));
 
 					if (selecting == friend)
-					    attroff(CLR(SELECT_FRIEND));
+					    attroff(CLR(SELECT_PLAYER));
 					else if (selecting == enemy)
 					    attroff(CLR(SELECT_ENEMY));
 				    }
