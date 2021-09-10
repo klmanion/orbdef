@@ -194,8 +194,6 @@ selection_run(
 	pair_t *var;
 	head_t *lst;
 
-	int acc;
-
 	int rows,cols;
 	chtype ch;
 
@@ -247,7 +245,6 @@ selection_run(
 				else
 				    lst = &cmn->enm_lst;
 
-				acc = '0';
 				STAILQ_FOREACH(var, lst, cdr)
 				    {
 					tower_t *t;
@@ -266,9 +263,6 @@ selection_run(
 					    attroff(CLR(SELECT_FRIEND));
 					else if (selecting == enemy)
 					    attroff(CLR(SELECT_ENEMY));
-
-					if (acc == '9'+1)
-					    acc = 'a';
 				    }
 
 				if (target)
@@ -323,14 +317,11 @@ selection_run(
 			break;;
 
 		default:
-			if (isalnum(ch))
+			if (isalpha(ch))
 			    {
 				int n;
 
-				if (isdigit(ch))
-				    n = ch - '0';
-				else
-				    n = ch - 'a';
+				n = ch - 'a';
 
 				lst = selecting == friend ? &cmn->plr_lst : &cmn->enm_lst;
 

@@ -151,10 +151,7 @@ char
 id_char(
     const int	id)
 {
-	if (id <= 9)
-	    return id + '0';
-	else
-	    return id + 'a';
+	return id + 'a';
 }
 
 /* vi: set ts=8 sw=8 noexpandtab tw=79: */
