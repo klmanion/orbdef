@@ -25,9 +25,9 @@ binprefix =
 bindir = $(prefix)/bin
 
 SRCS_C = main.c orbdef.c \
-	 type.c pair.c \
-	 dice.c screen.c \
-	 entity.c dir.c stbl.c \
+	 pair.c \
+	 entity.c type.c pos.c dir.c \
+	 dice.c screen.c stbl.c \
 	 tower.c shell.c wall.c \
 	 soldier.c
 SRCS = $(SRCS_C)

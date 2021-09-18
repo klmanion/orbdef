@@ -128,7 +128,7 @@ shell_init(
 
 			wall_init(wall_alloc(&shell->wall_lst[w++]),
 				  tok,
-				  shell->e->yo,shell->e->xo,
+				  shell->e->pos.yo,shell->e->pos.xo,
 				  yd,xd);
 		    }
 	    }
@@ -235,7 +235,7 @@ shell_draw(
 		wall = sh->wall_lst[w];
 		assert (wall);
 
-		mvprintw(entity_pos_y(wall->e),entity_pos_x(wall->e),
+		mvprintw(pos_y(&wall->e->pos),pos_x(&wall->e->pos),
 			 "%c", wall->tok);
 	    }
 

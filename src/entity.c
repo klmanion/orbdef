@@ -43,21 +43,7 @@ entity_init(
 	if (!entity)
 	    entity = entity_alloc(NULL);
 
-	entity->yo = (int *)malloc(sizeof(int));
-	if (!entity->yo)
-	    errx(1,"malloc failure, %s:%d", __FILE__, __LINE__);
-
-	entity->xo = (int *)malloc(sizeof(int));
-	if (!entity->xo)
-	    errx(1,"malloc failure, %s:%d", __FILE__, __LINE__);
-
-	*entity->yo = y;
-	*entity->xo = x;
-
-	entity->yd = 0;
-	entity->xd = 0;
-
-	entity->rel = false;
+	pos_init(&entity->pos, y,x);
 
 	entity->icon = '\0';
 
@@ -89,13 +75,7 @@ entity_init_rel(
 	if (!entity)
 	    entity = entity_alloc(NULL);
 
-	entity->yo = yo;
-	entity->xo = xo;
-
-	entity->yd = yd;
-	entity->xd = xd;
-
-	entity->rel = true;
+	pos_init_rel(&entity->pos, yo,xo, yd,xd);
 
 	entity->icon = '\0';
 
@@ -117,11 +97,7 @@ entity_deinit(
 {
 	assert (entity);
 
-	if (entity_is_relative(entity))
-	    {
-		free(entity->yo);	entity->yo = (int *)NULL;
-		free(entity->xo);	entity->xo = (int *)NULL;
-	    }
+	pos_deinit(&entity->pos);
 
 	return entity;
 }
@@ -142,16 +118,6 @@ entity_free(
 }
 
 /* predicates {{{1 */
-/* _is_relative() {{{2
- * 	Returns true if the entity's position is defined relative to a point
- * 	outside itself.
- */
-bool
-entity_is_relative(
-    const entity_t *const	e)
-{
-	return e->rel;
-}
 
 /* _is_visable() {{{2
  */
@@ -169,114 +135,6 @@ entity_is_hidden(
     const entity_t *const	e)
 {
 	return !entity_is_visable(e);
-}
-
-/* accessors/mutators {{{1 */
-/* _pos_y() {{{2 */
-int
-entity_pos_y(
-    const entity_t *const	e)
-{
-	assert (e);
-	return *e->yo + e->yd;
-}
-
-/* _pos_y_set() {{{2 */
-int
-entity_pos_y_set(
-    entity_t *const	e,
-    const int		i)
-{
-	assert (e);
-
-	if (!entity_is_relative(e))
-	    return *e->yo = i;
-	else
-	    return e->yd = i;
-}
-
-/* _pos_x() {{{2 */
-int
-entity_pos_x(
-    const entity_t *const	e)
-{
-	assert (e);
-	return *e->xo + e->xd;
-}
-
-/* _pos_x_set() {{{2 */
-int
-entity_pos_x_set(
-    entity_t *const	e,
-    const int		i)
-{
-	assert (e);
-
-	if (!entity_is_relative(e))
-	    return *e->xo = i;
-	else
-	    return e->xd = i;
-}
-
-/* _pos_set() {{{2
- * 	Moves the entity.
- * 	Movement must be checked by calling function.
- */
-entity_t*
-entity_pos_set(
-    entity_t *const	e,
-    const int		y,
-    const int		x)
-{
-	assert (e);
-
-	entity_pos_y_set(e, y);
-	entity_pos_x_set(e, x);
-
-	return e;
-}
-
-/* _delta() {{{2
- * 	Moves entity by the values of the arguments relative to its position
- */
-entity_t*
-entity_delta(
-    entity_t *const	e,
-    const int		dy,
-    const int		dx)
-{
-	assert (e);
-
-	entity_pos_y_set(e, entity_pos_y(e) + dy);
-	entity_pos_x_set(e, entity_pos_x(e) + dx);
-
-	return e;
-}
-
-/* _dir() {{{2
- * 	Move entity in given direction.
- */
-entity_t*
-entity_mvdir(
-    entity_t *const	e,
-    const dir_t		dir,
-    const int		n)
-{
-	assert (e);
-
-	if (dir_is_up(dir))
-	    entity_delta(e, -n,0);
-
-	if (dir_is_down(dir))
-	    entity_delta(e, n,0);
-
-	if (dir_is_left(dir))
-	    entity_delta(e, 0,-n);
-
-	if (dir_is_right(dir))
-	    entity_delta(e, 0,n);
-
-	return e;
 }
 
 /* vi: set ts=8 sw=8 noexpandtab tw=79: */

@@ -90,7 +90,7 @@ wall_draw(
     const int		ox)
 {
 	assert (wall);
-	mvprintw(entity_pos_y(wall->e),entity_pos_x(wall->e),
+	mvprintw(pos_y(&wall->e->pos),pos_x(&wall->e->pos),
 		 "%c", wall->tok);
 	return;
 }

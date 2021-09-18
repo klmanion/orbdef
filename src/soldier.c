@@ -107,7 +107,7 @@ soldier_draw(
 
 	attron(COLOR_PAIR(clrpr));
 
-	mvprintw(entity_pos_y(sld->e),entity_pos_x(sld->e),
+	mvprintw(pos_y(&sld->e->pos),pos_x(&sld->e->pos),
 		 "%c", sld->e->icon);
 
 	attroff(COLOR_PAIR(clrpr));

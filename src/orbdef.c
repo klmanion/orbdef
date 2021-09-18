@@ -125,7 +125,7 @@ stage_set_run(
 		tower_lst_draw(&cmn->plr_lst);
 		tower_lst_draw(&cmn->enm_lst);
 
-		move(entity_pos_y(&cursor),entity_pos_x(&cursor));
+		move(pos_y(&cursor.pos),pos_x(&cursor.pos));
 		addch(inch() & A_CHARTEXT | A_REVERSE);
 
 		refresh();
@@ -139,32 +139,32 @@ stage_set_run(
 		/* TODO: cursor object */
 		case 'j':
 		case KEY_DOWN:
-			entity_mvdir(&cursor, dir_bot, 1);	break;;
+			pos_mvdir(&cursor.pos, dir_bot, 1);	break;;
 		case 'k':
 		case KEY_UP:
-			entity_mvdir(&cursor, dir_top, 1);	break;;
+			pos_mvdir(&cursor.pos, dir_top, 1);	break;;
 		case 'h':
 		case KEY_LEFT:
-			entity_mvdir(&cursor, dir_cl, 1);	break;;
+			pos_mvdir(&cursor.pos, dir_cl, 1);	break;;
 		case 'l':
 		case KEY_RIGHT:
-			entity_mvdir(&cursor, dir_cr, 1);	break;;
+			pos_mvdir(&cursor.pos, dir_cr, 1);	break;;
 		case 'y':
-			entity_mvdir(&cursor, dir_tl, 1);	break;;
+			pos_mvdir(&cursor.pos, dir_tl, 1);	break;;
 		case 'u':
-			entity_mvdir(&cursor, dir_tr, 1);	break;;
+			pos_mvdir(&cursor.pos, dir_tr, 1);	break;;
 		case 'b':
-			entity_mvdir(&cursor, dir_bl, 1);	break;;
+			pos_mvdir(&cursor.pos, dir_bl, 1);	break;;
 		case 'n':
-			entity_mvdir(&cursor, dir_br, 1);	break;;
+			pos_mvdir(&cursor.pos, dir_br, 1);	break;;
 
 		case '\r':	/* place tower */
 			is_enemy = selecting_for == sf_player ? false : true;
 
 			p = pair_init_car(NULL,
 					  (void *)tower_init(NULL,
-							     entity_pos_y(&cursor),
-							     entity_pos_x(&cursor),
+							     pos_y(&cursor.pos),
+							     pos_x(&cursor.pos),
 							     is_enemy));
 
 			STAILQ_INSERT_TAIL(selecting_for == sf_player ? &cmn->plr_lst : &cmn->enm_lst, p, cdr);
@@ -255,8 +255,8 @@ selection_run(
 					    attron(CLR(SELECT_ENEMY));
 
 					t = (tower_t *)var->car;
-					mvprintw(entity_pos_y(t->e),
-						 entity_pos_x(t->e),
+					mvprintw(pos_y(&t->e->pos),
+						 pos_x(&t->e->pos),
 						 "%c", id_char(t->id));
 
 					if (selecting == friend)
@@ -269,8 +269,8 @@ selection_run(
 				    {
 					attron(CLR(SELECT_TARGET));
 
-					mvprintw(entity_pos_y(target->e),
-						 entity_pos_x(target->e),
+					mvprintw(pos_y(&target->e->pos),
+						 pos_x(&target->e->pos),
 						 "%c", id_char(target->id));
 
 					attroff(CLR(SELECT_TARGET));

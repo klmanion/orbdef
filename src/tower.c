@@ -119,7 +119,7 @@ tower_shell_add(
 	assert (t);
 	assert (s);
 
-	entity_pos_set(s->e, entity_pos_y(t->e),entity_pos_x(t->e));
+	pos_set(&s->e->pos, pos_y(&t->e->pos),pos_x(&t->e->pos));
 
 	return t->shell_lst[t->shell_num++] = s;
 }

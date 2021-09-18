@@ -6,18 +6,13 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include "pos.h"
 #include "dir.h"
 
 typedef
 struct Entity
 {
-	int	*yo;
-	int	*xo;
-
-	int	yd;
-	int	xd;
-
-	bool	rel;	/* flag for relative position */
+	pos_t	pos;
 
 	char	icon;
 
@@ -33,18 +28,8 @@ entity_t*	entity_init_rel (entity_t *,int *const,int *const,
 entity_t*	entity_deinit (entity_t *);
 entity_t*	entity_free (entity_t **);
 
-bool	entity_is_relative (const entity_t *const);
 bool	entity_is_visable (const entity_t *const);
 bool	entity_is_hidden (const entity_t *const);
-
-int	entity_pos_y (const entity_t *const);
-int	entity_pos_y_set (entity_t *const,const int);
-int	entity_pos_x (const entity_t *const);
-int	entity_pos_x_set (entity_t *const,const int);
-
-entity_t*	entity_pos_set (entity_t *const,const int,const int);
-entity_t*	entity_delta (entity_t *const,const int,const int);
-entity_t*	entity_mvdir (entity_t *const,const dir_t,const int);
 
 #endif /* !_ENTITY_H_ */
 
