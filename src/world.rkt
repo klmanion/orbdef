@@ -30,7 +30,7 @@
 
     (on-step (->m void?))
 
-    (draw ((is-a?/c dc<%>) . ->m . void?)))
+    (draw ((is-a?/c dc<%>) natural-number/c natural-number/c . ->m . void?)))
 
   (class* object% (world<%>)
     (super-new)
@@ -49,12 +49,12 @@
         (void)))
 
     (define/public draw
-      (λ (dc)
+      (λ (dc height width)
         (send* dc
                (set-background "black")
                (set-text-foreground "white")
                (clear)) 
-        (send space draw dc)))))
+        (send space draw dc height width)))))
 
 (module+ test
   (require rackunit))

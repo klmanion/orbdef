@@ -31,9 +31,9 @@
       [content "o"])
 
     (define/public draw
-      (λ (dc)
-        (let ([y (* (send dc get-char-height) pos-y)]
-              [x (* (send dc get-char-width) pos-x)])
+      (λ (dc yoff xoff)
+        (let ([y (+ (* (send dc get-char-height) pos-y) yoff)]
+              [x (+ (* (send dc get-char-width) pos-x) xoff)])
           (send dc draw-text content x y))))))
 
 (module+ test

@@ -68,7 +68,7 @@
      (λ (w)
        (lambda (width height dc)
          (let ([world (word-world w)])
-           (send world draw dc)))))])
+           (send world draw dc height width)))))])
 
 (module+ main
   (call-with-chaos

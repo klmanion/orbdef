@@ -33,7 +33,7 @@
     (get-dim-y (->m natural-number/c))
     (get-dim-x (->m natural-number/c))               
 
-    (draw ((is-a?/c dc<%>) . ->m . any)))
+    (draw ((is-a?/c dc<%>) natural-number/c natural-number/c . ->m . any)))
 
   (class* object% (grid<%>)
     (super-new)
@@ -60,12 +60,14 @@
         dim-x))
 
     (define/public draw
-      (λ (dc)
-        (for-each (λ (lst)
-                    (for-each (λ (e)
-                                (send e draw dc))
-                              lst))
-                  base)))))
+      (λ (dc height width)
+        (let ([yoff (floor (/ (- height (* dim-y (send dc get-char-height))) 2))]
+              [xoff (floor (/ (- width (* dim-x (send dc get-char-width))) 2))])
+          (for-each (λ (lst)
+                      (for-each (λ (e)
+                                  (send e draw dc yoff xoff))
+                                lst))
+                    base))))))
    
 
 (module+ test
