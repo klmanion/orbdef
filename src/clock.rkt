@@ -11,11 +11,12 @@
 
 (provide clock<%> clock%)
 
-(define-interface clock<%> ()
-                  (tick get-ticks 
-                   step get-steps
-                   is-paused? is-unpaused? set-pause pause unpause pause-toggle
-                   set-ticks-per-step get-steps-per-sec))
+(define clock<%>
+  (interface ()
+             tick get-ticks 
+             step get-steps
+             is-paused? is-unpaused? set-pause pause unpause pause-toggle
+             set-ticks-per-step get-steps-per-sec))
 
 (define/contract clock%
   (class/c
@@ -45,6 +46,9 @@
   (class* object% (clock<%>)
     (super-new)
 
+    (init-field
+      [on-step void])
+
     (field
       [tick-rate 60] 
       [ticks 0]
@@ -71,7 +75,8 @@
 ;;;
     (define/public step
       (λ ()
-        (set! steps (add1 steps))))
+        (set! steps (add1 steps))
+        (on-step)))
 
     (define/public get-steps
       (λ ()

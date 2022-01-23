@@ -17,11 +17,12 @@
          lux lux/chaos/gui lux/chaos/gui/mouse lux/chaos/gui/key)
 
 (require "clock.rkt")
+(require "world.rkt")
 
 (module+ test
   (require rackunit))
 
-(struct word (clock) 
+(struct word (world) 
   #:mutable
   #:methods gen:word
   [(define word-label
@@ -30,41 +31,51 @@
 
    (define word-tick
      (λ (w)
-       (let ([clock (word-clock w)])
-         (send clock tick))
+       (let* ([world (word-world w)]
+              [time (send world get-time)])
+         (send time tick))
        w))
 
    (define word-event
      (λ (w e)
-       (cond
-         ([key-event? e]
-          (let ([kc (send e get-key-code)])
-            (cond [(equal? kc #\space)
-                   (send (word-clock w) pause-toggle)]
-                  [(equal? kc #\.)
-                   (send (word-clock w) step)]))))
+       (let* ([world (word-world w)]
+              [time (send world get-time)])
+         (cond
+           ([key-event? e]
+            (let ([kc (send e get-key-code)])
+              (cond [(equal? kc #\space)
+                     (send time pause-toggle)]
+                    [(equal? kc #\.)
+                     (send time step)])))))
        w))
+
+;;   (define word-output
+;;     (λ (w)
+;;       (lambda (width height dc)
+;;         (let* ([world (word-world w)]
+;;                [time (send world get-time)]) 
+;;           (let* ([char-height (send dc get-char-height)]
+;;                  [ticks-height (- height char-height)]
+;;                  [steps-height (- height (* char-height 2))])
+;;             (send* dc
+;;                    (set-background "black")
+;;                    (set-text-foreground "white")
+;;                    (clear)
+;;                    (draw-text (number->string (send time get-ticks)) 0 ticks-height)
+;;                    (draw-text (number->string (send time get-steps)) 0 steps-height)))))))
 
    (define word-output
      (λ (w)
        (lambda (width height dc)
-         (let ([clock (word-clock w)])
-           (let* ([char-height (send dc get-char-height)]
-                  [ticks-height (- height char-height)]
-                  [steps-height (- height (* char-height 2))])
-             (send* dc
-                    (set-background "black")
-                    (set-text-foreground "white")
-                    (clear)
-                    (draw-text (number->string (send clock get-ticks)) 0 ticks-height)
-                    (draw-text (number->string (send clock get-steps)) 0 steps-height)))))))])
+         (let ([world (word-world w)])
+           (send world draw dc)))))])
 
 (module+ main
   (call-with-chaos
     (make-gui)
     (thunk
       (fiat-lux (word
-                  (new clock%)))))) 
+                  (new world%)))))) 
 
 (module+ test
   (void))
