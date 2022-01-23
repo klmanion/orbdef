@@ -49,21 +49,6 @@
                      (send time step)])))))
        w))
 
-;;   (define word-output
-;;     (λ (w)
-;;       (lambda (width height dc)
-;;         (let* ([world (word-world w)]
-;;                [time (send world get-time)]) 
-;;           (let* ([char-height (send dc get-char-height)]
-;;                  [ticks-height (- height char-height)]
-;;                  [steps-height (- height (* char-height 2))])
-;;             (send* dc
-;;                    (set-background "black")
-;;                    (set-text-foreground "white")
-;;                    (clear)
-;;                    (draw-text (number->string (send time get-ticks)) 0 ticks-height)
-;;                    (draw-text (number->string (send time get-steps)) 0 steps-height)))))))
-
    (define word-output
      (λ (w)
        (lambda (width height dc)
