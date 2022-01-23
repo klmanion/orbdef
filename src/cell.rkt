@@ -18,7 +18,15 @@
   (interface ()))
 
 (define/contract cell%
-  any/c
+  (class/c
+    (init-field
+      [pos-y natural-number/c]
+      [pos-x natural-number/c])
+    
+    (field
+      [content string?])
+
+    (draw ((is-a?/c dc<%>) natural-number/c natural-number/c . ->m . any)))
 
   (class* object% (cell<%>)
     (super-new)
