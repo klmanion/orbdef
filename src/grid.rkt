@@ -33,7 +33,7 @@
     (get-dim-y (->m natural-number/c))
     (get-dim-x (->m natural-number/c))               
 
-    (draw ((is-a?/c dc<%>) natural-number/c natural-number/c . ->m . any)))
+    (draw ((is-a?/c dc<%>) integer? integer? . ->m . any)))
 
   (class* object% (grid<%>)
     (super-new)

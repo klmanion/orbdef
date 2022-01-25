@@ -9,39 +9,38 @@
          racket/gui/base
          racket/contract)
 
+(require "pos.rkt")
+
 (module+ test
   (require rackunit))
 
 (provide cell<%> cell%)
 
 (define cell<%>
-  (interface ()))
+  (interface (pos<%>)
+             draw))
 
 (define/contract cell%
   (class/c
-    (init-field
-      [pos-y natural-number/c]
-      [pos-x natural-number/c])
-    
     (field
       [content string?])
 
-    (draw ((is-a?/c dc<%>) natural-number/c natural-number/c . ->m . any)))
+    (draw ((is-a?/c dc<%>) integer? integer? . ->m . any)))
 
-  (class* object% (cell<%>)
-    (super-new)
-
-    (init-field
-      [pos-y #f]
-      [pos-x #f])
+  (class* pos% (cell<%>)
+    (init-field pos-y pos-x)
+    (super-new [y pos-y] [x pos-x])
 
     (field
-      [content "o"])
+      [occupants '()]
+      [content " "])
+
+    (inherit-field y x)
 
     (define/public draw
       (λ (dc yoff xoff)
-        (let ([y (+ (* (send dc get-char-height) pos-y) yoff)]
-              [x (+ (* (send dc get-char-width) pos-x) xoff)])
+        (let ([y (+ (* (send dc get-char-height) y) yoff)]
+              [x (+ (* (send dc get-char-width) x) xoff)])
           (send dc draw-text content x y))))))
 
 (module+ test
