@@ -1,0 +1,31 @@
+TODO
+
+POC:
+
+[x]	time
+[x]	world grid
+[ ]	creature/building
+[ ]	control
+[ ]		selection
+[ ]		command
+[ ]			movement
+[ ]			attack
+[ ]			construct
+[ ]	combat
+[ ]	abstractions
+[ ]	stats
+
+ALPHA:
+
+[ ]	splash
+[ ]	menu
+[ ]	help
+[ ]	contextual help
+[ ]	customization
+[ ]	saves
+[ ]	cross-version control
+[ ]		launcher
+[ ]	servers
+[ ]		LAN
+[ ]		WAN
+[ ]	graphics
