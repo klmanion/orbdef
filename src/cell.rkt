@@ -18,7 +18,7 @@
 
 (define cell<%>
   (interface (pos<%>)
-             draw))
+             set-content draw))
 
 (define/contract cell%
   (class/c
@@ -36,6 +36,10 @@
       [content " "])
 
     (inherit-field y x)
+
+    (define/public set-content
+      (λ (nc)
+        (set! content nc)))
 
     (define/public draw
       (λ (dc yoff xoff)

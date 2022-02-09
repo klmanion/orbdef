@@ -19,6 +19,7 @@
 (define grid<%>
   (interface ()
              get-dim-y get-dim-x
+             cell-at
              draw))
 
 (define/contract grid%
@@ -28,10 +29,12 @@
       [dim-x natural-number/c])
 
     (field
-      [base vector/c])
+      [base (listof (listof (is-a?/c cell<%>)))])
 
     (get-dim-y (->m natural-number/c))
     (get-dim-x (->m natural-number/c))               
+
+    (cell-at (->m integer? integer? (is-a?/c cell<%>)))
 
     (draw ((is-a?/c dc<%>) integer? integer? . ->m . any)))
 
@@ -59,6 +62,10 @@
       (λ ()
         dim-x))
 
+    (define/public cell-at
+      (λ (y x)
+        (list-ref (list-ref base y) x)))
+
     (define/public draw
       (λ (dc height width)
         (let ([yoff (floor (/ (- height (* dim-y (send dc get-char-height))) 2))]
@@ -68,7 +75,6 @@
                                   (send e draw dc yoff xoff))
                                 lst))
                     base))))))
-   
 
 (module+ test
   (void))
